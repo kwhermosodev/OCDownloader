@@ -16,6 +16,8 @@ def bundle_project(str_project_name):
     str_icon_path = os.path.join(str_parent_path,'tools','ico.ico')
     str_script_path = os.path.join(str_parent_path, str_project_name + '.py')
 
+    str_pythonnet_dll_path = os.path.join(str_parent_path, '_venv','Lib','site-packages','pythonnet','runtime', 'Python.Runtime.dll')
+
     # pyinstaller command as array
     pyinstaller_cmd = [
         f'{str_pyinstraller_path}',
@@ -26,6 +28,7 @@ def bundle_project(str_project_name):
         f'--specpath={str_bundle_path}',
         f'--add-data={str_data_path}',
         f'--icon={str_icon_path}',
+        f'--add-binary={str_pythonnet_dll_path};.'
     ]
 
     pyinstaller_cmd.append(str_script_path)

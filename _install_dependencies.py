@@ -4,6 +4,7 @@ import sys
 libraries = [
     "pyinstaller",
     "pywebview",
+    "pythonnet"
     #"requests",
     #"yt-dlp",
     #"psutil",

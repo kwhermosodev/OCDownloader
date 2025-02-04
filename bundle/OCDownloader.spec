@@ -4,7 +4,7 @@
 a = Analysis(
     ['d:\\Projects\\OCDownloader\\OCDownloader.py'],
     pathex=[],
-    binaries=[],
+    binaries=[('d:\\Projects\\OCDownloader\\_venv\\Lib\\site-packages\\pythonnet\\runtime\\Python.Runtime.dll', '.')],
     datas=[('d:\\Projects\\OCDownloader\\tools', 'tools')],
     hiddenimports=[],
     hookspath=[],
