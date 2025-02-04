@@ -1,0 +1,88 @@
+@font-face {
+    font-family: 'pixelated';
+    src: url('Minecraft.ttf');
+}
+
+.color-neon {
+    color: #74ee15;
+}
+
+.fullvh {
+    height: 100vh;
+}
+
+.text-pixelated {
+    font-family: 'pixelated';
+}
+
+.btn-dark {
+    background-color: #1f1f1f !important;
+}
+
+.btn-neon {
+    background-color: #74ee15 !important;
+}
+
+.bg-dark {
+    background-color: #181818 !important;
+}
+
+.console-box {
+    height: 20vh;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #74ee15;
+    border-radius: 0.5em;
+    overflow-y: scroll;
+    overflow-X: hidden;
+}
+
+.info-box {
+    height:  50vh;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #74ee15;
+    border-radius: 0.5em;
+    overflow-y: scroll;
+    overflow-X: hidden;
+}
+
+
+.queue-box {
+    height: 15vh;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #74ee15;
+    border-radius: 0.5em;
+    overflow-y: scroll;
+    overflow-X: hidden;
+}
+
+.user-select {
+    user-select: text;
+}
+
+.mw-800 {
+    max-width: 600px;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #18181800;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #74ee15;
+    border-radius: 0.5em;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #74ee15;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: #18181800;
+}

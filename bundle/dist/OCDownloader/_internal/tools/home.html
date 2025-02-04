@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./bootstrap.css">
+    <link rel="stylesheet" href="./bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="./common.css">
+</head>
+
+<body class="bg-dark">
+
+    <section>
+        <div class="d-flex justify-content-center align-items-center fullvh">
+            <div class="container mw-800">
+                <h1 class="display-1 color-neon text-center text-pixelated">OCDownloader</h1>
+                <form action="">
+                    <div class="text-center">
+                        <a class="btn btn-neon text-dark" href="home.html">
+                            <i class="bi bi-house"></i>
+                        </a>
+                        <a class="btn btn-dark color-neon" href="info.html">
+                            <i class="bi bi-info-circle"></i>
+                        </a>
+                    </div>
+                    <div class="container-fluid p-0 m-0 mt-2">
+                        <div class="row g-1">
+                            <div class="col">
+                                <div class="d-grid gap-1 mt-2">
+                                    <button id="btn_create_csv" class="btn btn-dark color-neon text-pixelated"
+                                        type="button">Create CSV</button>
+                                    <button id="btn_upload_csv" class="btn btn-dark color-neon text-pixelated"
+                                        type="button">Upload CSV</button>
+                                    <button id="btn_download_from_csv" class="btn btn-dark color-neon text-pixelated"
+                                        type="button">Download from CSV</button>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="d-grid gap-1 mt-2">
+                                    <button id="btn_abort" class="btn btn-dark color-neon text-pixelated"
+                                        type="button">Abort</button>
+                                    <button id="btn_clear_console" class="btn btn-dark color-neon text-pixelated"
+                                        type="button">Clear Console Text</button>
+                                    <button id="btn_clear_queue" class="btn btn-dark color-neon text-pixelated"
+                                        type="button">Clear Queue Text</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-fluid m-0 p-0 mt-2 pt-3">
+                        <div class="d-flex justify-content-between">
+                            <h2 class="text-pixelated color-neon h6 mt-1">Console:</h2>
+                            <div id="div_busy_box" class="mb-2">
+                                <div id="div_busy" class="spinner-border spinner-border-sm color-neon" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="div_console_box" class="console-box p-1 d-flex flex-column justify-content-between">
+                            <ul id="ul_console_list" class="console-list color-neon text-pixelated">
+
+                            </ul>
+                        </div>
+                        <h2 class="text-pixelated color-neon h6 mt-3">Queue:</h2>
+                        <div id="div_queue_box" class="queue-box p-1 d-flex flex-column justify-content-between">
+                            <ul id="ul_queue_list" class="console-list color-neon text-pixelated">
+
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <script src="./jquery.js"></script>
+    <script src="./bootstrap.js"></script>
+    <script src="./home.js"></script>
+</body>
+
+</html>

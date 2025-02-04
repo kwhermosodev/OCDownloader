@@ -1,1 +1,3 @@
-_venv
+_venv/
+#_install_dependencies.py
+#_pyinstaller_auto.py
