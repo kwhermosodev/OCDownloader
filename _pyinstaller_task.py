@@ -1,6 +1,7 @@
 import os
 import subprocess
 import shutil
+import zipfile
 
 str_project_name = 'OCDownloader'
 
@@ -35,6 +36,18 @@ def bundle_project(str_project_name):
     subprocess.run(pyinstaller_cmd, check=True)
 
     print(f'{str_project_name} was bundled successfully at {str_bundle_path}')
+
+    str_dist_project_path = os.path.join(str_dist_path,str_project_name)
+    str_dist_output_zip = os.path.join(str_dist_path,str_project_name+'.zip')
+    compress(str_dist_project_path, str_dist_output_zip)
+
+
+def compress(source_folder, output_zip):
+    with zipfile.ZipFile(output_zip, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(source_folder):
+                for file in files:
+                    zipf.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), source_folder))
+    print(f"Folder '{source_folder}' has been compressed to '{output_zip}'.")
 
 if __name__ == "__main__":
     bundle_project(str_project_name)
