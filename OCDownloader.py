@@ -5,7 +5,6 @@ import sys
 str_program_path = None  # Root directory of .py or .exe
 str_tools_path = None  # Path for bundled tools folder
 
-
 # Resolve program paths to be used in locating files
 def get_paths():
     global str_program_path, str_tools_path
