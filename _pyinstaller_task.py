@@ -42,7 +42,7 @@ def bundle_project(str_project_name):
     print(f'{str_project_name} was bundled successfully at {str_bundle_path}')
 
     str_dist_project_path = os.path.join(str_dist_path,str_project_name)
-    str_dist_output_zip = os.path.join(str_dist_path,str_project_name+'.7z')
+    str_dist_output_zip = os.path.join(str_dist_path,str_project_name+'.zip')
     compress_folder(str_dist_project_path, str_dist_output_zip)
 
 def compress_folder(input_folder, output_zip_file):
