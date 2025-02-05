@@ -3,3 +3,4 @@ If this isn't done, then the *.exe will fail due to Execution Policy (hard to tr
 I'll try 7z maybe or other solutions to work around this.
 
 py7zr requires Build Tools as mentioned in the installation error, but what it didn't say is that you have to modify your build tools via visual studio installer to install Desktop Development with C++
+For now I'll use zip
