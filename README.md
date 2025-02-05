@@ -33,3 +33,4 @@ A YouTube downloader focused on downloading and pre-organizing your music collec
 - [IMPORTANT] Before extracting the .zip file, right-click it and tick `unblock`. Otherwise Windows would cripple the extracted .exe file
 - [IMPORTANT] Since my software isn't digitally signed, you will need to excempt the .exe from your antivirus.
 - Run `OCDownloader.exe`
+- [OPTIONAL] instead of creating a blank CSV template, try my `_sample_list.csv `
