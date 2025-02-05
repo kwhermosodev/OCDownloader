@@ -1,0 +1,5 @@
+Downloaded zip files need to be unblocked via properties before extraction.
+If this isn't done, then the *.exe will fail due to Execution Policy (hard to trace esp. if you forgot all about it).
+I'll try 7z maybe or other solutions to work around this.
+
+py7zr requires Build Tools as mentioned in the installation error, but what it didn't say is that you have to modify your build tools via visual studio installer to install Desktop Development with C++

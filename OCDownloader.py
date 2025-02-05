@@ -5,6 +5,7 @@ import sys
 str_program_path = None  # Root directory of .py or .exe
 str_tools_path = None  # Path for bundled tools folder
 
+
 # Resolve program paths to be used in locating files
 def get_paths():
     global str_program_path, str_tools_path
@@ -15,7 +16,9 @@ def get_paths():
             str_program_path = os.path.abspath(os.path.dirname(__file__))
             str_tools_path = os.path.join(str_program_path,'tools') 
 
+# Bind python functions to events of front-end elements
 def bind(window):
+
     return
 
 if __name__ == '__main__':

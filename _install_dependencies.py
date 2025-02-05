@@ -4,10 +4,9 @@ import sys
 libraries = [
     "pyinstaller",
     "pywebview",
-    "pythonnet"
-    #"requests",
-    #"yt-dlp",
-    #"psutil",
+    "requests",
+    "yt-dlp",
+    "py7zr"
 ]
 
 def install_libraries(library_list):
