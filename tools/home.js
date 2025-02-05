@@ -77,9 +77,6 @@ function send_message(str) {
             } else if (str.startsWith('[Conversion Progress]')) {
                 updateLastListItem(str, '[Conversion Progress]');
                 resolve();
-            } else if (str.startsWith('[progress]')) {
-                updateLastListItem(str, '[progress]');
-                resolve();
             } else {
                 append_str(str);
                 resolve();

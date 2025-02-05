@@ -6,7 +6,7 @@ libraries = [
     "pywebview",
     "requests",
     "yt-dlp",
-    "zipfile"
+    "ffmpeg-progress-yield",
 ]
 
 def install_libraries(library_list):

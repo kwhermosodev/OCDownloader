@@ -8,7 +8,6 @@ import requests  # Importing requests to make HTTP requests
 import re  # Importing re for regular expressions
 import yt_dlp as ytdl  # Importing yt_dlp for downloading content from the internet (like YouTube)
 import psutil
-import subprocess
 from ffmpeg_progress_yield import FfmpegProgress
 
 window = None  # Webview window object
@@ -246,7 +245,7 @@ def download_file(row):  # Function to download a file based on the row data fro
                         ffmpeg_cmd = [str_ffmpeg_path, '-i', downloaded_file, '-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp3")]
                         ff = FfmpegProgress(ffmpeg_cmd)
                         for progress in ff.run_command_with_progress():
-                            send_message(f"[Conversion Progress]: {progress/100}")
+                            send_message(f"[Conversion Progress]: {int(progress)}%")
                         os.remove(downloaded_file)  # Remove the original file after conversion
                     elif result == 0 and media_type == 'video':  # Convert to MP4
                         info_dict = ydl.extract_info(url, download=False)
@@ -259,7 +258,7 @@ def download_file(row):  # Function to download a file based on the row data fro
                         ffmpeg_cmd = [str_ffmpeg_path, '-i', downloaded_file,'-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp4")]
                         ff = FfmpegProgress(ffmpeg_cmd)
                         for progress in ff.run_command_with_progress():
-                            send_message(f"[Conversion Progress]: {progress/100}")
+                            send_message(f"[Conversion Progress]: {int(progress)}%")
                         os.remove(downloaded_file)  # Remove the original file after conversion
     except Exception as ex:  # If there is any error
         send_message(str(ex))  # Send the error message
