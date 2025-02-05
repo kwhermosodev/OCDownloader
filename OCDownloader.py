@@ -10,6 +10,7 @@ import yt_dlp as ytdl  # Importing yt_dlp for downloading content from the inter
 import psutil
 from ffmpeg_progress_yield import FfmpegProgress
 import subprocess
+from subprocess import CREATE_NO_WINDOW
 
 window = None  # Webview window object
 str_tools_path = None  # Path for bundled files in .exe mode or script root directory
@@ -245,7 +246,7 @@ def download_file(row):  # Function to download a file based on the row data fro
                         #subprocess.run([str_ffmpeg_path, '-i', downloaded_file, '-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp3")])
                         ffmpeg_cmd = [str_ffmpeg_path, '-i', downloaded_file, '-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp3")]
                         ff = FfmpegProgress(ffmpeg_cmd)
-                        for progress in ff.run_command_with_progress():
+                        for progress in ff.run_command_with_progress({"creationflags":CREATE_NO_WINDOW}):
                             send_message(f"[Conversion Progress]: {int(progress)}%")
                         os.remove(downloaded_file)  # Remove the original file after conversion
                     elif result == 0 and media_type == 'video':  # Convert to MP4
@@ -258,7 +259,7 @@ def download_file(row):  # Function to download a file based on the row data fro
                         #subprocess.run([str_ffmpeg_path, '-i', downloaded_file,'-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp4")])
                         ffmpeg_cmd = [str_ffmpeg_path, '-i', downloaded_file,'-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp4")]
                         ff = FfmpegProgress(ffmpeg_cmd)
-                        for progress in ff.run_command_with_progress():
+                        for progress in ff.run_command_with_progress({"creationflags":CREATE_NO_WINDOW}):
                             send_message(f"[Conversion Progress]: {int(progress)}%")
                         os.remove(downloaded_file)  # Remove the original file after conversion
     except Exception as ex:  # If there is any error
