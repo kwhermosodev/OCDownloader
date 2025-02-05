@@ -5,7 +5,8 @@ libraries = [
     "pyinstaller",
     "pywebview",
     "requests",
-    "yt-dlp"
+    "yt-dlp",
+    "zipfile"
 ]
 
 def install_libraries(library_list):
