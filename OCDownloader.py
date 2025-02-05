@@ -6,9 +6,10 @@ import csv  # Importing csv to handle CSV files
 from tkinter import filedialog  # Importing filedialog to open file selection dialogs
 import requests  # Importing requests to make HTTP requests
 import re  # Importing re for regular expressions
-import time  # Importing time for time-based operations
 import yt_dlp as ytdl  # Importing yt_dlp for downloading content from the internet (like YouTube)
 import psutil
+import subprocess
+from ffmpeg_progress_yield import FfmpegProgress
 
 window = None  # Webview window object
 str_tools_path = None  # Path for bundled files in .exe mode or script root directory
@@ -224,27 +225,42 @@ def download_file(row):  # Function to download a file based on the row data fro
                     'overwrites': True,  # Allow overwriting of files
                 }
                 if media_type == 'audio':  # If media type is audio
-                    ydl_opts.update({  # Update options for audio download
-                        'format': 'bestaudio/best',  # Set best audio format
-                        'postprocessors': [{  # Set postprocessors for audio extraction
-                            'key': 'FFmpegExtractAudio',  # Extract audio using ffmpeg
-                            'preferredcodec': 'mp3',  # Preferred codec is mp3
-                            'preferredquality': '192',  # Set audio quality
-                        }]
-                    })
+                    ydl_opts.update({'format': 'bestaudio/best'})
                 elif media_type == 'video':  # If media type is video
                     format_string = f'bestvideo[width<={max_width_in_pixels}]+bestaudio/best'  # Set format string for video and audio
                     ydl_opts.update({'format': format_string})  # Update format options
-                    ydl_opts['postprocessors'] = [{  # Set postprocessors for video conversion
-                        'key': 'FFmpegVideoConvertor',  # Convert video format using ffmpeg
-                        'preferedformat': 'mp4'  # Preferred video format is mp4
-                    }]
                 else:  # If media type is invalid
                     raise ValueError("Invalid media type. Choose 'audio' or 'video'.")  # Raise error for invalid media type
                 send_message(f"Starting download: {sub_folder}: {artist} - {title}")  # Notify start of download
                 send_message('[enable_spinner]')  # Enable spinner (loading indicator)
                 with ytdl.YoutubeDL(ydl_opts) as ydl:  # Create yt-dlp instance with the final download options
-                    ydl.download([url])  # Start downloading
+                    result = ydl.download([url])  # Start downloading
+                    if result == 0 and media_type == 'audio':  # Convert to MP3
+                        info_dict = ydl.extract_info(url, download=False)
+                        str_file_path = ydl.prepare_filename(info_dict)  # This will give the complete path with extension
+                        str_file_extension = os.path.splitext(str_file_path)[1][1:]
+                        send_message(f'Downloaded file ext is: {str_file_extension}') 
+                        downloaded_file = os.path.join(sub_folder_path, f"{final_filename}.{str_file_extension}")
+                        send_message(f"Converting to MP3: {downloaded_file}")
+                        #subprocess.run([str_ffmpeg_path, '-i', downloaded_file, '-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp3")])
+                        ffmpeg_cmd = [str_ffmpeg_path, '-i', downloaded_file, '-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp3")]
+                        ff = FfmpegProgress(ffmpeg_cmd)
+                        for progress in ff.run_command_with_progress():
+                            send_message(f"[Conversion Progress]: {progress/100}")
+                        os.remove(downloaded_file)  # Remove the original file after conversion
+                    elif result == 0 and media_type == 'video':  # Convert to MP4
+                        info_dict = ydl.extract_info(url, download=False)
+                        str_file_path = ydl.prepare_filename(info_dict)  # This will give the complete path with extension
+                        str_file_extension = os.path.splitext(str_file_path)[1][1:]
+                        send_message(f'Downloaded file ext is: {str_file_extension}') 
+                        downloaded_file = os.path.join(sub_folder_path, f"{final_filename}.{str_file_extension}")
+                        send_message(f"Converting to MP4: {downloaded_file}")
+                        #subprocess.run([str_ffmpeg_path, '-i', downloaded_file,'-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp4")])
+                        ffmpeg_cmd = [str_ffmpeg_path, '-i', downloaded_file,'-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp4")]
+                        ff = FfmpegProgress(ffmpeg_cmd)
+                        for progress in ff.run_command_with_progress():
+                            send_message(f"[Conversion Progress]: {progress/100}")
+                        os.remove(downloaded_file)  # Remove the original file after conversion
     except Exception as ex:  # If there is any error
         send_message(str(ex))  # Send the error message
 

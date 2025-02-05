@@ -74,6 +74,12 @@ function send_message(str) {
                 append_str(str);
                 append_str('Video conversion may take a while');
                 resolve();
+            } else if (str.startsWith('[Conversion Progress]')) {
+                updateLastListItem(str, '[Conversion Progress]');
+                resolve();
+            } else if (str.startsWith('[progress]')) {
+                updateLastListItem(str, '[progress]');
+                resolve();
             } else {
                 append_str(str);
                 resolve();
