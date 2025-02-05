@@ -303,6 +303,7 @@ def bind(window): # Bind python functions to events of front-end elements
         load_settings()  # Load settings from the config file
         send_message(f'Initializing...')  # Notify initialization
         check_working_csv()  # Check if a CSV file was loaded from a previous session
+        send_message(f'Initialized.')  # Notify initialization
         btn_create_csv = window.dom.get_element('#btn_create_csv')  # Get the create CSV button element
         btn_create_csv.on('click', lambda e: create_csv(e))  # Bind click event to create CSV function
         btn_upload_csv = window.dom.get_element('#btn_upload_csv')  # Get the upload CSV button element
