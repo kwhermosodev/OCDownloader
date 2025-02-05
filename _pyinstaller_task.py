@@ -24,6 +24,7 @@ def bundle_project(str_project_name):
         f'{str_pyinstraller_path}',
         '--onedir',
         '--noconsole',
+        '--windowed',
         #'--debug=all',
         f'--distpath={str_dist_path}',
         f'--workpath={str_build_path}',

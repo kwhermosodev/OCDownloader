@@ -9,6 +9,7 @@ import re  # Importing re for regular expressions
 import yt_dlp as ytdl  # Importing yt_dlp for downloading content from the internet (like YouTube)
 import psutil
 from ffmpeg_progress_yield import FfmpegProgress
+import subprocess
 
 window = None  # Webview window object
 str_tools_path = None  # Path for bundled files in .exe mode or script root directory
