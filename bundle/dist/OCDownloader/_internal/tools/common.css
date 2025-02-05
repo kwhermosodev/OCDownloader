@@ -3,6 +3,10 @@
     src: url('Minecraft.ttf');
 }
 
+#div_busy{
+    display: none;
+}
+
 .color-neon {
     color: #74ee15;
 }
