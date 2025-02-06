@@ -133,11 +133,15 @@ def validate_csv(path):  # Function to validate the entire CSV file
                         return False  # Return False if headers are invalid
                     # Initialize row count
                     bool_total_check = True  # Flag for checking all rows
-                    for row in reader:  # Iterate over rows in the CSV
+                    rows_to_validate = list(reader)  # Convert the reader object to a list to get all rows
+                    int_rows_for_validation = len(rows_to_validate)  # Get the number of rows in the file
+
+                    for row in rows_to_validate:  # Iterate over rows in the CSV
                         int_row_count += 1  # Increment row count
+                        send_message(f'[Validating] row {int_row_count}/{int_rows_for_validation}')
                         if not validate_row(row, int_row_count):  # Validate each row
                             bool_total_check = False  # Set flag to False if any row is invalid
-                    send_message(f'This file has {int_row_count} rows.')  # Notify total rows in the file
+                    send_message(f'This file has {int_rows_for_validation} rows.')  # Notify total rows in the file
                     if bool_total_check:  # If all rows are valid
                         send_message('The headers and rows have been validated.')  # Notify success
                     return bool_total_check  # Return validation status

@@ -77,7 +77,10 @@ function send_message(str) {
             } else if (str.startsWith('[Conversion Progress]')) {
                 updateLastListItem(str, '[Conversion Progress]');
                 resolve();
-            } else {
+            }  else if (str.startsWith('[Validating]')) {
+                updateLastListItem(str, '[Validating]');
+                resolve();
+            }else {
                 append_str(str);
                 resolve();
             }
