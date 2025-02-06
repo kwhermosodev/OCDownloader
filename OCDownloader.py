@@ -193,6 +193,13 @@ def download_file(row):  # Function to download a file based on the row data fro
             formats = info_dict.get('formats', [])  # Get the list of available formats
             best_format = None  # Variable to hold the best format for video
             lowest_width_threshold = 80 * max_width_in_pixels  # Calculate threshold for video width
+
+            str_final_path_to_check = os.path.join(sub_folder_path, f"{final_filename}.mp3")
+            if media_type == 'video':
+                str_final_path_to_check = os.path.join(sub_folder_path, f"{final_filename}.mp4")
+            if os.path.exists(str_final_path_to_check):
+                send_message('Download aborted: {str_final_path_to_check} exists.')
+                return
             if media_type == 'video':  # If media type is video
                 send_message('Looking for best video format.')  # Notify searching for video format
                 best_format = None  # Initialize best format variable
