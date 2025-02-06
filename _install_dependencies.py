@@ -7,7 +7,8 @@ libraries = [
     "requests",
     "yt-dlp",
     "ffmpeg-progress-yield",
-    "psutil"
+    "psutil",
+    "bs4"
 ]
 
 def install_libraries(library_list):
