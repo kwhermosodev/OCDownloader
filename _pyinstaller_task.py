@@ -7,7 +7,7 @@ import sys
 
 str_project_name = 'OCDownloader'
 str_program_path = os.path.abspath(os.path.dirname(__file__))
-str_info_html_path = os.path.join(str_program_path,'tools','info.html')
+str_info_html_path = os.path.join(str_program_path,'tools','home.html')
 
 def get_python_version():
     version = sys.version.split()[0]  # Get the first part of the version string

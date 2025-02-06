@@ -13,6 +13,7 @@
 
 .fullvh {
     height: 100vh;
+    overflow: scroll;
 }
 
 .text-pixelated {
