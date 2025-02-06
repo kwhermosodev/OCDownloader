@@ -124,13 +124,14 @@ def validate_csv(path):  # Function to validate the entire CSV file
         if path:
             if os.path.exists(path):
                 global int_row_count  # Declare global variable
+                int_row_count = 0
                 with open(path, 'r', newline='', encoding='utf-8') as upfile:  # Open the CSV file for reading
                     reader = csv.reader(upfile)  # Create CSV reader
                     headers = next(reader)  # Read the headers of the CSV
                     if headers != arr_csv_field_names:  # If headers do not match expected
                         send_message(f"Invalid headers. The file should only contain these headers: {arr_csv_field_names}")  # Notify invalid headers
                         return False  # Return False if headers are invalid
-                    int_row_count = 0  # Initialize row count
+                    # Initialize row count
                     bool_total_check = True  # Flag for checking all rows
                     for row in reader:  # Iterate over rows in the CSV
                         int_row_count += 1  # Increment row count
