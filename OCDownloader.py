@@ -120,6 +120,7 @@ def validate_row(row, int_row_count):  # Function to validate a single row of th
 
 def validate_csv(path):  # Function to validate the entire CSV file
     try:
+        send_message("Performing CSV validation, please wait.")
         if path:
             if os.path.exists(path):
                 global int_row_count  # Declare global variable
@@ -279,7 +280,6 @@ def download_from_csv(e):  # Function to download files based on CSV data
     try:
         int_row_count = 0
         int_current_row = 0        
-        send_message('Running last-minute CSV validation.')  # Notify CSV validation
         bool_is_csv_rows_ok = validate_csv(str_csv_path)  # Validate the CSV file
         if not bool_is_csv_rows_ok:  # If CSV is invalid
             send_message("CSV rows are invalid.")  # Notify invalid rows
