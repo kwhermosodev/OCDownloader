@@ -7,9 +7,7 @@ import sys
 
 str_project_name = 'OCDownloader'
 str_program_path = os.path.abspath(os.path.dirname(__file__))
-str_info_html_path = os.path.join(str_program_path,'tools','info.html') 
-str_sample_list_name = '_sample_list.csv'
-str_sample_list_path = os.path.join(str_program_path, str_sample_list_name)
+str_info_html_path = os.path.join(str_program_path,'tools','info.html')
 
 def get_python_version():
     version = sys.version.split()[0]  # Get the first part of the version string
@@ -85,11 +83,6 @@ def bundle_project(str_project_name):
     print(f'{str_project_name} was bundled successfully at {str_bundle_path}')
 
     str_dist_project_path = os.path.join(str_dist_path,str_project_name)
-
-    # copy sample csv
-    if(os.path.exists(str_sample_list_path)):
-        shutil.copy(str_sample_list_path, os.path.join(str_dist_project_path, str_sample_list_name))
-
     str_dist_output_zip = os.path.join(str_dist_path,str_project_name+'.zip')
     compress_folder(str_dist_project_path, str_dist_output_zip)
 
