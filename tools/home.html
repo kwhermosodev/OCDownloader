@@ -1,199 +1,245 @@
 <!DOCTYPE html>
 
 <html lang="en">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Document</title>
-<link href="./bootstrap.css" rel="stylesheet"/>
-<link href="./bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
-<link href="./common.css" rel="stylesheet"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Document</title>
+    <link href="./bootstrap.css" rel="stylesheet" />
+    <link href="./bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="./common.css" rel="stylesheet" />
 </head>
+
 <body class="bg-dark">
-<section>
-<div class="d-flex justify-content-center align-items-center fullvh">
-<div class="max-width-600px">
-<h1 class="display-1 text-pixelated color-neon text-center">OCDownloader</h1>
-<ul class="nav nav-tabs" data-bs-theme="dark" role="tablist">
-<li class="nav-item" role="presentation">
-<button aria-controls="home-tab-pane" aria-selected="true" class="nav-link active color-neon text-pixelated" data-bs-target="#div_tab_controls" data-bs-toggle="tab" role="tab" type="button">Controls</button>
-</li>
-<li class="nav-item" role="presentation">
-<button aria-controls="profile-tab-pane" aria-selected="false" class="nav-link color-neon text-pixelated" data-bs-target="#div_tab_info" data-bs-toggle="tab" id="profile-tab" role="tab" type="button">About</button>
-</li>
-</ul>
-<div class="tab-content">
-<div aria-labelledby="home-tab" class="tab-pane fade show active" id="div_tab_controls" role="tabpanel" tabindex="0">
-<div class="container-fluid p-0 m-0 mt-2">
-<div class="row g-1">
-<div class="col">
-<div class="d-grid gap-1 mt-2">
-<button class="btn btn-dark color-neon text-pixelated" id="btn_create_csv" type="button">Create CSV</button>
-<button class="btn btn-dark color-neon text-pixelated" id="btn_upload_csv" type="button">Upload CSV</button>
-<button class="btn btn-dark color-neon text-pixelated" id="btn_download_from_csv" type="button">Download from CSV</button>
-</div>
-</div>
-<div class="col">
-<div class="d-grid gap-1 mt-2">
-<button class="btn btn-dark color-neon text-pixelated" id="btn_abort" type="button">Abort</button>
-<button class="btn btn-dark color-neon text-pixelated" id="btn_clear_console" type="button">Clear Console Text</button>
-<button class="btn btn-dark color-neon text-pixelated" id="btn_clear_queue" type="button">Clear Queue Text</button>
-</div>
-</div>
-<div class="d-flex justify-content-between">
-<h2 class="text-pixelated color-neon h6 mt-1">Console:</h2>
-<div class="mb-2" id="div_busy_box">
-<div class="spinner-border spinner-border-sm color-neon" id="div_busy" role="status">
-<span class="visually-hidden">Loading...</span>
-</div>
-</div>
-</div>
-<div class="console-box p-1 d-flex flex-column justify-content-between" id="div_console_box">
-<ul class="console-list color-neon text-pixelated user-select" id="ul_console_list">
-</ul>
-</div>
-<h2 class="text-pixelated color-neon h6 mt-3">Queue:</h2>
-<div class="queue-box p-1 d-flex flex-column justify-content-between" id="div_queue_box">
-<ul class="console-list color-neon text-pixelated user-select" id="ul_queue_list">
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div aria-labelledby="profile-tab" class="tab-pane fade text-pixelated color-neon" id="div_tab_info" role="tabpanel" tabindex="0">
-<div class="m-0 p-0 mt-2 pt-3 max-height-600px overflow-y-scroll">
-<span class="text-pixelated color-neon">Features:</span>
-<ul>
-<li>Simple UI</li>
-<li>CSV Template</li>
-<li>Single executable</li>
-<li>Save your CSV and redownload your collection anytime without having to manually
+    <section>
+        <div class="d-flex justify-content-center align-items-center fullvh">
+            <div class="max-width-600px">
+                <h1 class="display-1 text-pixelated color-neon text-center">OCDownloader</h1>
+                <ul class="nav nav-tabs" data-bs-theme="dark" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button aria-controls="home-tab-pane" aria-selected="true" class="nav-link active color-neon text-pixelated" data-bs-target="#div_tab_controls" data-bs-toggle="tab" role="tab" type="button">Controls</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button aria-controls="profile-tab-pane" aria-selected="false" class="nav-link color-neon text-pixelated" data-bs-target="#div_tab_info" data-bs-toggle="tab" id="profile-tab" role="tab" type="button">About</button>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div aria-labelledby="home-tab" class="tab-pane fade show active" id="div_tab_controls" role="tabpanel" tabindex="0">
+                        <div class="container-fluid p-0 m-0 mt-2">
+                            <div class="row g-1">
+                                <div class="col">
+                                    <div class="d-grid gap-1 mt-2">
+                                        <button class="btn btn-dark color-neon text-pixelated" id="btn_create_csv" type="button">Create CSV</button>
+                                        <button class="btn btn-dark color-neon text-pixelated" id="btn_upload_csv" type="button">Upload CSV</button>
+                                        <button class="btn btn-dark color-neon text-pixelated" id="btn_download_from_csv" type="button">Download from CSV</button>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="d-grid gap-1 mt-2">
+                                        <button class="btn btn-dark color-neon text-pixelated" id="btn_abort" type="button">Abort</button>
+                                        <button class="btn btn-dark color-neon text-pixelated" id="btn_clear_console" type="button">Clear Console Text</button>
+                                        <button class="btn btn-dark color-neon text-pixelated" id="btn_clear_queue" type="button">Clear Queue Text</button>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <h2 class="text-pixelated color-neon h6 mt-1">Console:</h2>
+                                    <div class="mb-2" id="div_busy_box">
+                                        <div class="spinner-border spinner-border-sm color-neon" id="div_busy" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-smaller console-box p-1 d-flex flex-column justify-content-between" id="div_console_box">
+                                    <ul class="console-list color-neon text-pixelated user-select" id="ul_console_list">
+                                    </ul>
+                                </div>
+                                <h2 class="text-pixelated color-neon h6 mt-3">Queue:</h2>
+                                <div class="text-smaller queue-box p-1 d-flex flex-column justify-content-between" id="div_queue_box">
+                                    <ul class="console-list color-neon text-pixelated user-select" id="ul_queue_list">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div aria-labelledby="profile-tab" class="tab-pane fade text-pixelated color-neon" id="div_tab_info" role="tabpanel" tabindex="0">
+                        <div class="text-smaller m-0 p-0 mt-2 pt-3 max-height-600px overflow-y-scroll">
+                            <span class="text-pixelated color-neon">Features:</span>
+                            <ul>
+                                <li>Simple UI</li>
+                                <li>CSV Template</li>
+                                <li>Single executable</li>
+                                <li>Save your CSV and redownload your collection anytime without having to manually
                                     reorganize your files.</li>
-<li>Auto convert to MP3 and MP4</li>
-</ul>
-<span class="text-pixelated color-neon">Usage/Examples:</span>
-<ul>
-<li>Click "Create CSV"
+                                <li>Auto convert to MP3 and MP4</li>
+                            </ul>
+                            <span class="text-pixelated color-neon">Usage/Examples:</span>
+                            <ul>
+                                <li>Click "Create CSV"
                                     <ul>
-<li>This will create a CSV in the same location as your .exe file.</li>
-</ul>
-</li>
-<li>Edit the CSV using MS Excel or any software available to you. All fields are
+                                        <li>This will create a CSV in the same location as your .exe file.</li>
+                                    </ul>
+                                </li>
+                                <li>Edit the CSV using MS Excel or any software available to you. All fields are
                                     required unless specified otherwise:
                                     <ul>
-<li>Put your custom subfolder(s) (e.g., `MP4` or `MP4\Synthwave Videos`) in
+                                        <li>Put your custom subfolder(s) (e.g., `MP4` or `MP4\Synthwave Videos`) in
                                             the `sub_folder` field.</li>
-<li>Put the song artist in the `artist` field (optional).</li>
-<li>Put the song title in the `title` field.</li>
-<li>Put `audio` for audio files or `video` for video files in the
+                                        <li>Put the song artist in the `artist` field (optional).</li>
+                                        <li>Put the song title in the `title` field.</li>
+                                        <li>Put `audio` for audio files or `video` for video files in the
                                             `media_type_audio_or_video` field.</li>
-<li>Put the max width in pixels in the `max_width_in_pixels` field.</li>
-<li>For audio media types, the video width can be left blank.</li>
-<li>Add multiple rows as needed.</li>
-</ul>
-</li>
-<li>Click "Upload CSV" and choose your edited CSV.</li>
-<li>Click "Download from CSV" to begin downloading.</li>
-</ul>
-<span class="text-pixelated color-neon">Installation:</span>
-<ul>
-<li>Download the `OCDownloader.zip` from the `bundle/dist/` folder.</li>
-<li>[IMPORTANT] Before extracting the .zip file, right-click it and tick `unblock`.
+                                        <li>Put the max width in pixels in the `max_width_in_pixels` field.</li>
+                                        <li>For audio media types, the video width can be left blank.</li>
+                                        <li>Add multiple rows as needed.</li>
+                                    </ul>
+                                </li>
+                                <li>Click "Upload CSV" and choose your edited CSV.</li>
+                                <li>Click "Download from CSV" to begin downloading.</li>
+                            </ul>
+                            <span class="text-pixelated color-neon">Installation:</span>
+                            <ul>
+                                <li>Download the `OCDownloader.zip` from the `bundle/dist/` folder.</li>
+                                <li>[IMPORTANT] Before extracting the .zip file, right-click it and tick `unblock`.
                                     Otherwise Windows would cripple the extracted .exe file.</li>
-<li>[IMPORTANT] Since my software isn't digitally signed, you will need to exempt
+                                <li>[IMPORTANT] Since my software isn't digitally signed, you will need to exempt
                                     the .exe from your antivirus.</li>
-<li>Run `OCDownloader.exe`</li>
-</ul>
-<span class="text-pixelated color-neon">Important Notice:</span>
-<ul>
-<li>By using **OCDownloader**, you agree to the following terms and conditions.
+                                <li>Run `OCDownloader.exe`</li>
+                            </ul>
+                            <span class="text-pixelated color-neon">Important Notice:</span>
+                            <ul>
+                                <li>By using **OCDownloader**, you agree to the following terms and conditions.
                                     **OCDownloader** is a tool to help you download publicly available videos from
                                     YouTube. However, you are responsible for ensuring that you do not violate
                                     YouTube’s Terms of Service, copyright laws, or any applicable regulations.</li>
-</ul>
-<span class="text-pixelated color-neon">YouTube Terms of Service:</span>
-<ul>
-<li>According to YouTube's <a href="https://www.youtube.com/t/terms">Terms of
+                            </ul>
+                            <span class="text-pixelated color-neon">YouTube Terms of Service:</span>
+                            <ul>
+                                <li>According to YouTube's <a href="https://www.youtube.com/t/terms">Terms of
                                         Service</a>, you may not download any content unless:
                                     <ul>
-<li>A download button or link is provided by YouTube for that content.</li>
-<li>You have explicit permission from the content owner to download their
+                                        <li>A download button or link is provided by YouTube for that content.</li>
+                                        <li>You have explicit permission from the content owner to download their
                                             content.</li>
-</ul>
-</li>
-<li>By using **OCDownloader**, you acknowledge that it is your responsibility to
+                                    </ul>
+                                </li>
+                                <li>By using **OCDownloader**, you acknowledge that it is your responsibility to
                                     comply with YouTube’s Terms of Service and any applicable copyright laws.
                                     **OCDownloader** does not support or encourage downloading copyrighted content
                                     without permission.</li>
-</ul>
-<span class="text-pixelated color-neon">Purpose of OCDownloader:</span>
-<ul>
-<li>Personal use: Downloading content for offline viewing where permitted by
+                            </ul>
+                            <span class="text-pixelated color-neon">Purpose of OCDownloader:</span>
+                            <ul>
+                                <li>Personal use: Downloading content for offline viewing where permitted by
                                     YouTube.</li>
-<li>Educational use: Downloading videos for educational or research purposes, where
+                                <li>Educational use: Downloading videos for educational or research purposes, where
                                     allowed by law.</li>
-<li>Non-commercial use: Downloading content strictly for personal or academic use,
+                                <li>Non-commercial use: Downloading content strictly for personal or academic use,
                                     not for redistribution or commercial gain.</li>
-</ul>
-<span class="text-pixelated color-neon">Legal Disclaimer:</span>
-<ul>
-<li>**OCDownloader** is provided as-is. We do not host or distribute any video
+                            </ul>
+                            <span class="text-pixelated color-neon">Legal Disclaimer:</span>
+                            <ul>
+                                <li>**OCDownloader** is provided as-is. We do not host or distribute any video
                                     content.</li>
-<li>The app does not condone the downloading or distribution of copyrighted material
+                                <li>The app does not condone the downloading or distribution of copyrighted material
                                     without proper authorization.</li>
-<li>**OCDownloader** is not responsible for any legal consequences resulting from
+                                <li>**OCDownloader** is not responsible for any legal consequences resulting from
                                     the misuse of the app.</li>
-<li>Users must adhere to all relevant copyright laws, including the **Digital
+                                <li>Users must adhere to all relevant copyright laws, including the **Digital
                                     Millennium Copyright Act (DMCA)**, and any other laws governing intellectual
                                     property in your country.</li>
-</ul>
-<span class="text-pixelated color-neon">User Responsibility:</span>
-<ul>
-<li>By using **OCDownloader**, you acknowledge that:
+                            </ul>
+                            <span class="text-pixelated color-neon">User Responsibility:</span>
+                            <ul>
+                                <li>By using **OCDownloader**, you acknowledge that:
                                     <ul>
-<li>You are solely responsible for ensuring that you do not violate any
+                                        <li>You are solely responsible for ensuring that you do not violate any
                                             intellectual property rights or YouTube’s Terms of Service.</li>
-<li>You must not use the app to download copyrighted content unless you have
+                                        <li>You must not use the app to download copyrighted content unless you have
                                             explicit permission from the copyright owner.</li>
-<li>You will not use **OCDownloader** for any commercial purposes or to
+                                        <li>You will not use **OCDownloader** for any commercial purposes or to
                                             redistribute downloaded content without proper authorization.</li>
-</ul>
-</li>
-</ul>
-<span class="text-pixelated color-neon">Feature Limitations:</span>
-<ul>
-<li>**OCDownloader** does not host any video content. Videos are downloaded directly
+                                    </ul>
+                                </li>
+                            </ul>
+                            <span class="text-pixelated color-neon">Feature Limitations:</span>
+                            <ul>
+                                <li>**OCDownloader** does not host any video content. Videos are downloaded directly
                                     from YouTube's servers.</li>
-</ul>
-<span class="text-pixelated color-neon">Copyright and Usage:</span>
-<ul>
-<li>If you are unsure whether your intended use of downloaded content is legal, it
+                            </ul>
+                            <span class="text-pixelated color-neon">Copyright and Usage:</span>
+                            <ul>
+                                <li>If you are unsure whether your intended use of downloaded content is legal, it
                                     is advisable to consult a legal professional. **OCDownloader** is not liable for
                                     any legal disputes or consequences that may arise from its use.</li>
-</ul>
-<span class="text-pixelated color-neon">DISCLAIMER:</span>
-<ul>
-<li>This tool is provided for personal and educational use only. We do not encourage
+                            </ul>
+                            <span class="text-pixelated color-neon">DISCLAIMER:</span>
+                            <ul>
+                                <li>This tool is provided for personal and educational use only. We do not encourage
                                     or support the illegal download or distribution of copyrighted content. You are
                                     responsible for ensuring you comply with YouTube’s Terms of Service and all
                                     applicable copyright laws.</li>
-</ul>
-<span class="text-pixelated color-neon">Libraries used and included:</span>
-<ul class="color-neon text-pixelated" id="ul_libraries"><li>python - 3.13.1</li><li>altgraph - 0.17.4</li><li>beautifulsoup4 - 4.13.3</li><li>bottle - 0.13.2</li><li>Brotli - 1.1.0</li><li>bs4 - 0.0.2</li><li>certifi - 2025.1.31</li><li>cffi - 1.17.1</li><li>charset-normalizer - 3.4.1</li><li>clr_loader - 0.2.7.post0</li><li>ffmpeg-progress-yield - 0.11.3</li><li>future - 1.0.0</li><li>idna - 3.10</li><li>inflate64 - 1.0.1</li><li>markdown-it-py - 3.0.0</li><li>mdurl - 0.1.2</li><li>multivolumefile - 0.2.3</li><li>packaging - 24.2</li><li>pefile - 2023.2.7</li><li>pip - 25.0</li><li>proxy_tools - 0.1.0</li><li>psutil - 6.1.1</li><li>pybcj - 1.0.3</li><li>pycparser - 2.22</li><li>pycryptodomex - 3.21.0</li><li>pyee - 12.1.1</li><li>Pygments - 2.19.1</li><li>pyinstaller - 6.11.1</li><li>pyinstaller-hooks-contrib - 2025.1</li><li>pyppmd - 1.1.1</li><li>pythonnet - 3.0.5</li><li>pywebview - 5.4</li><li>pywin32-ctypes - 0.2.3</li><li>pyzstd - 0.16.2</li><li>requests - 2.32.3</li><li>rich - 13.9.4</li><li>setuptools - 75.8.0</li><li>soupsieve - 2.6</li><li>texttable - 1.7.0</li><li>typing_extensions - 4.12.2</li><li>urllib3 - 2.3.0</li><li>yt-dlp - 2025.1.26</li></ul>
-<span class="text-pixelated color-neon">Non-Python components:</span>
-<ul class="color-neon text-pixelated">
-<li>ffmpeg - 7.1</li>
-<li>Bootstrap - 5.3</li>
-<li>jQuery - 3.7.1</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<script src="./jquery.js"></script>
-<script src="./bootstrap.js"></script>
-<script src="./home.js"></script>
+                            </ul>
+                            <span class="text-pixelated color-neon">Libraries used and included:</span>
+                            <ul class="color-neon text-pixelated" id="ul_libraries">
+                                <li>python - 3.13.1</li>
+                                <li>altgraph - 0.17.4</li>
+                                <li>beautifulsoup4 - 4.13.3</li>
+                                <li>bottle - 0.13.2</li>
+                                <li>Brotli - 1.1.0</li>
+                                <li>bs4 - 0.0.2</li>
+                                <li>certifi - 2025.1.31</li>
+                                <li>cffi - 1.17.1</li>
+                                <li>charset-normalizer - 3.4.1</li>
+                                <li>clr_loader - 0.2.7.post0</li>
+                                <li>ffmpeg-progress-yield - 0.11.3</li>
+                                <li>future - 1.0.0</li>
+                                <li>idna - 3.10</li>
+                                <li>inflate64 - 1.0.1</li>
+                                <li>markdown-it-py - 3.0.0</li>
+                                <li>mdurl - 0.1.2</li>
+                                <li>multivolumefile - 0.2.3</li>
+                                <li>packaging - 24.2</li>
+                                <li>pefile - 2023.2.7</li>
+                                <li>pip - 25.0</li>
+                                <li>proxy_tools - 0.1.0</li>
+                                <li>psutil - 6.1.1</li>
+                                <li>pybcj - 1.0.3</li>
+                                <li>pycparser - 2.22</li>
+                                <li>pycryptodomex - 3.21.0</li>
+                                <li>pyee - 12.1.1</li>
+                                <li>Pygments - 2.19.1</li>
+                                <li>pyinstaller - 6.11.1</li>
+                                <li>pyinstaller-hooks-contrib - 2025.1</li>
+                                <li>pyppmd - 1.1.1</li>
+                                <li>pythonnet - 3.0.5</li>
+                                <li>pywebview - 5.4</li>
+                                <li>pywin32-ctypes - 0.2.3</li>
+                                <li>pyzstd - 0.16.2</li>
+                                <li>requests - 2.32.3</li>
+                                <li>rich - 13.9.4</li>
+                                <li>setuptools - 75.8.0</li>
+                                <li>soupsieve - 2.6</li>
+                                <li>texttable - 1.7.0</li>
+                                <li>typing_extensions - 4.12.2</li>
+                                <li>urllib3 - 2.3.0</li>
+                                <li>yt-dlp - 2025.1.26</li>
+                            </ul>
+                            <span class="text-pixelated color-neon">Non-Python components:</span>
+                            <ul class="color-neon text-pixelated">
+                                <li>ffmpeg - 7.1</li>
+                                <li>Bootstrap - 5.3</li>
+                                <li>jQuery - 3.7.1</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="./jquery.js"></script>
+    <script src="./bootstrap.js"></script>
+    <script src="./home.js"></script>
 </body>
+
 </html>

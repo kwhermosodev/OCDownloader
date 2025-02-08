@@ -52,6 +52,9 @@
     overflow-X: hidden;
 }
 
+.text-smaller{
+    font-size: small;
+}
 
 .queue-box {
     height: 15vh;
