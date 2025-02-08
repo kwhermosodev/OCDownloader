@@ -33,7 +33,7 @@
 }
 
 .console-box {
-    height: 20vh;
+    height: 15vh;
     border-style: solid;
     border-width: 2px;
     border-color: #74ee15;
@@ -57,7 +57,7 @@
 }
 
 .queue-box {
-    height: 15vh;
+    height: 20vh;
     border-style: solid;
     border-width: 2px;
     border-color: #74ee15;

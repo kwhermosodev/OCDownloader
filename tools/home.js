@@ -58,6 +58,7 @@ function fn_send_message(str) {
                     fn_append_list_item(str, 'ul_console_list');
                 }
             }
+            $("#div_console_box").scrollTop($("#div_console_box")[0].scrollHeight);
             resolve();            
         } catch (error) {
             reject(error);
@@ -74,6 +75,7 @@ function fn_send_queue(str, int_queue_id) {
             }else{
                 $("#ul_queue_list").append(`<li id="${int_queue_id}" class="user-select">` + str + '</li>');
             }
+            $("#div_queue_box").scrollTop($("#div_queue_box")[0].scrollHeight);
             resolve();         
         } catch (error) {
             reject(error);
