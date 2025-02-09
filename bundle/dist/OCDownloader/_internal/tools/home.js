@@ -34,49 +34,26 @@ function fn_update_last_list_item(str, str_prefix, str_ul_id) {
     })
 }
 
-function fn_send_message(str) {
+function fn_send_message(str, str_message_id = null) {
     return new Promise(function (resolve, reject) {
         try {
-            str_bracket_prefix = str.split(']')[0] + ']';
-            arr_prefixes_that_update = [
-                '[youtube]',
-                '[download]',
-                '[Converting]',
-                '[Validating]'
-            ]
-            if(arr_prefixes_that_update.includes(str_bracket_prefix)){
-                fn_update_last_list_item(str, str_bracket_prefix, 'ul_console_list');                
-            }else{
-                if (str.startsWith('[enable_spinner]')) {
-                    $('#div_busy').show();
-                } else if (str.startsWith('[disable_spinner]')) {
-                    $('#div_busy').hide();
-                } else if (str.startsWith('[VideoConvertor]')) {
-                    fn_append_list_item(str, 'ul_console_list')
-                    fn_append_list_item('Video conversion may take a while', 'ul_console_list');
+            if (str_message_id) {
+                $li_message_li = $("#" + str_message_id);
+                if ($li_message_li.length > 0) {
+                    $li_message_li.text(str);
                 } else {
-                    fn_append_list_item(str, 'ul_console_list');
+                    $("#ul_console_list").append(`<li id="${str_message_id}" class="no-wrap user-select">` + str + '</li>');
                 }
+            } else if (str.startsWith('[Validating]')) {
+                fn_update_last_list_item(str, '[Validating]', "ul_console_list")
+            } else if (str.startsWith('[enable_spinner]')) {
+                $('#div_busy').show();
+            } else if (str.startsWith('[disable_spinner]')) {
+                $('#div_busy').hide();
+            } else {
+                fn_append_list_item(str, 'ul_console_list');
             }
-            $("#div_console_box").scrollTop($("#div_console_box")[0].scrollHeight);
-            resolve();            
-        } catch (error) {
-            reject(error);
-        }
-    })
-}
-
-function fn_send_queue(str, int_queue_id) {
-    return new Promise(function (resolve, reject) {
-        try {
-            $li_queue_member = $("#"+int_queue_id);
-            if($li_queue_member.length > 0){
-                $li_queue_member.text(str);
-            }else{
-                $("#ul_queue_list").append(`<li id="${int_queue_id}" class="user-select">` + str + '</li>');
-            }
-            $("#div_queue_box").scrollTop($("#div_queue_box")[0].scrollHeight);
-            resolve();         
+            resolve();
         } catch (error) {
             reject(error);
         }

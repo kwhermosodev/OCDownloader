@@ -33,13 +33,16 @@
 }
 
 .console-box {
-    height: 15vh;
+    height: 40vh;
     border-style: solid;
     border-width: 2px;
     border-color: #74ee15;
     border-radius: 0.5em;
     overflow-y: scroll;
-    overflow-X: hidden;
+}
+
+.overflow-x-scroll{
+    overflow-x: scroll;
 }
 
 .info-box {
@@ -49,27 +52,20 @@
     border-color: #74ee15;
     border-radius: 0.5em;
     overflow-y: scroll;
-    overflow-X: hidden;
+    overflow-x: scroll;
 }
 
 .text-smaller{
     font-size: small;
 }
 
-.queue-box {
-    height: 20vh;
-    border-style: solid;
-    border-width: 2px;
-    border-color: #74ee15;
-    border-radius: 0.5em;
-    overflow-y: scroll;
-    overflow-X: hidden;
-}
-
 .user-select {
     user-select: text;
 }
 
+.no-wrap{
+    white-space: nowrap;
+}
 .mw-800 {
     max-width: 600px;
 }
@@ -101,7 +97,7 @@
 }
 
 .max-height-600px{
-    height: 600px;
+    height: 300px;
     max-height:  100%;
 }
 

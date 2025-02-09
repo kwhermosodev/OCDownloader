@@ -37,7 +37,6 @@
 <div class="d-grid gap-1 mt-2">
 <button class="btn btn-dark color-neon text-pixelated" id="btn_abort" type="button">Abort</button>
 <button class="btn btn-dark color-neon text-pixelated" id="btn_clear_console" type="button">Clear Console Text</button>
-<button class="btn btn-dark color-neon text-pixelated" id="btn_clear_queue" type="button">Clear Queue Text</button>
 </div>
 </div>
 <div class="d-flex justify-content-between">
@@ -48,13 +47,8 @@
 </div>
 </div>
 </div>
-<div class="text-smaller console-box p-1 d-flex flex-column justify-content-between" id="div_console_box">
-<ul class="console-list color-neon text-pixelated user-select" id="ul_console_list">
-</ul>
-</div>
-<h2 class="text-pixelated color-neon h6 mt-3">Queue:</h2>
-<div class="text-smaller queue-box p-1 d-flex flex-column justify-content-between" id="div_queue_box">
-<ul class="console-list color-neon text-pixelated user-select" id="ul_queue_list">
+<div class="text-smaller overflow-x-scroll console-box p-1" id="div_console_box">\
+                                    <ul class="console-list color-neon text-pixelated user-select" id="ul_console_list">
 </ul>
 </div>
 </div>

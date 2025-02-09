@@ -21,7 +21,6 @@ imports:
     <a href="#_collections_abc">_collections_abc</a>
  &#8226;   <a href="#_weakrefset">_weakrefset</a>
  &#8226;   <a href="#abc">abc</a>
- &#8226;   <a href="#asyncio">asyncio</a>
  &#8226;   <a href="#codecs">codecs</a>
  &#8226;   <a href="#collections">collections</a>
  &#8226;   <a href="#concurrent.futures">concurrent.futures</a>
@@ -163,12 +162,14 @@ imports:
  &#8226;   <a href="#operator">operator</a>
  &#8226;   <a href="#os">os</a>
  &#8226;   <a href="#posixpath">posixpath</a>
+ &#8226;   <a href="#psutil">psutil</a>
  &#8226;   <a href="#pyi_rth__tkinter.py">pyi_rth__tkinter.py</a>
  &#8226;   <a href="#pyi_rth_inspect.py">pyi_rth_inspect.py</a>
  &#8226;   <a href="#pyi_rth_multiprocessing.py">pyi_rth_multiprocessing.py</a>
  &#8226;   <a href="#pyi_rth_pkgres.py">pyi_rth_pkgres.py</a>
  &#8226;   <a href="#pyi_rth_pkgutil.py">pyi_rth_pkgutil.py</a>
  &#8226;   <a href="#pyi_rth_setuptools.py">pyi_rth_setuptools.py</a>
+ &#8226;   <a href="#random">random</a>
  &#8226;   <a href="#re">re</a>
  &#8226;   <a href="#re._casefix">re._casefix</a>
  &#8226;   <a href="#re._compiler">re._compiler</a>
@@ -1146,6 +1147,8 @@ imported by:
  &#8226;   <a href="#packaging.utils">packaging.utils</a>
  &#8226;   <a href="#packaging.version">packaging.version</a>
  &#8226;   <a href="#pkg_resources">pkg_resources</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
  &#8226;   <a href="#pydoc">pydoc</a>
  &#8226;   <a href="#setuptools">setuptools</a>
  &#8226;   <a href="#setuptools._core_metadata">setuptools._core_metadata</a>
@@ -3242,8 +3245,7 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#OCDownloader.py">OCDownloader.py</a>
- &#8226;   <a href="#asyncio">asyncio</a>
+    <a href="#asyncio">asyncio</a>
  &#8226;   <a href="#asyncio.base_events">asyncio.base_events</a>
  &#8226;   <a href="#asyncio.base_futures">asyncio.base_futures</a>
  &#8226;   <a href="#asyncio.base_subprocess">asyncio.base_subprocess</a>
@@ -5965,6 +5967,10 @@ imported by:
  &#8226;   <a href="#pkgutil">pkgutil</a>
  &#8226;   <a href="#platform">platform</a>
  &#8226;   <a href="#pprint">pprint</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
  &#8226;   <a href="#pydoc">pydoc</a>
  &#8226;   <a href="#queue">queue</a>
  &#8226;   <a href="#requests.compat">requests.compat</a>
@@ -6222,6 +6228,10 @@ imported by:
  &#8226;   <a href="#importlib.resources.readers">importlib.resources.readers</a>
  &#8226;   <a href="#packaging._manylinux">packaging._manylinux</a>
  &#8226;   <a href="#packaging._tokenizer">packaging._tokenizer</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
  &#8226;   <a href="#requests.utils">requests.utils</a>
  &#8226;   <a href="#setuptools._distutils._msvccompiler">setuptools._distutils._msvccompiler</a>
  &#8226;   <a href="#setuptools._distutils.command.build_ext">setuptools._distutils.command.build_ext</a>
@@ -6429,6 +6439,7 @@ imported by:
  &#8226;   <a href="#multiprocessing.sharedctypes">multiprocessing.sharedctypes</a>
  &#8226;   <a href="#packaging._manylinux">packaging._manylinux</a>
  &#8226;   <a href="#platform">platform</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
  &#8226;   <a href="#setuptools._vendor.packaging._manylinux">setuptools._vendor.packaging._manylinux</a>
  &#8226;   <a href="#setuptools._vendor.platformdirs.windows">setuptools._vendor.platformdirs.windows</a>
  &#8226;   <a href="#setuptools._vendor.wheel.macosx_libfile">setuptools._vendor.wheel.macosx_libfile</a>
@@ -6720,6 +6731,7 @@ imported by:
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#http.server">http.server</a>
  &#8226;   <a href="#plistlib">plistlib</a>
+ &#8226;   <a href="#psutil">psutil</a>
  &#8226;   <a href="#requests.models">requests.models</a>
  &#8226;   <a href="#requests.sessions">requests.sessions</a>
  &#8226;   <a href="#setuptools._vendor.tomli._re">setuptools._vendor.tomli._re</a>
@@ -6891,7 +6903,8 @@ imported by:
   <a target="code" href="" type="text/plain"><tt>dummy_threading</tt></a>
 <span class="moduletype">MissingModule</span>  <div class="import">
 imported by:
-    <a href="#requests.cookies">requests.cookies</a>
+    <a href="#psutil._compat">psutil._compat</a>
+ &#8226;   <a href="#requests.cookies">requests.cookies</a>
 
   </div>
 
@@ -9940,6 +9953,8 @@ imported by:
  &#8226;   <a href="#inspect">inspect</a>
  &#8226;   <a href="#packaging._elffile">packaging._elffile</a>
  &#8226;   <a href="#plistlib">plistlib</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
  &#8226;   <a href="#py_compile">py_compile</a>
  &#8226;   <a href="#re">re</a>
  &#8226;   <a href="#setuptools._vendor.packaging._elffile">setuptools._vendor.packaging._elffile</a>
@@ -9984,6 +9999,9 @@ imported by:
  &#8226;   <a href="#pathlib._abc">pathlib._abc</a>
  &#8226;   <a href="#pkg_resources">pkg_resources</a>
  &#8226;   <a href="#posixpath">posixpath</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
  &#8226;   <a href="#setuptools._distutils.file_util">setuptools._distutils.file_util</a>
  &#8226;   <a href="#shutil">shutil</a>
  &#8226;   <a href="#socket">socket</a>
@@ -10029,6 +10047,7 @@ imported by:
 <span class="moduletype">MissingModule</span>  <div class="import">
 imported by:
     <a href="#_pyrepl.unix_console">_pyrepl.unix_console</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
  &#8226;   <a href="#pty">pty</a>
  &#8226;   <a href="#subprocess">subprocess</a>
  &#8226;   <a href="#yt_dlp.utils._utils">yt_dlp.utils._utils</a>
@@ -10236,6 +10255,10 @@ imported by:
  &#8226;   <a href="#pkg_resources">pkg_resources</a>
  &#8226;   <a href="#pkgutil">pkgutil</a>
  &#8226;   <a href="#platform">platform</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
  &#8226;   <a href="#re">re</a>
  &#8226;   <a href="#setuptools">setuptools</a>
  &#8226;   <a href="#setuptools._distutils._modified">setuptools._distutils._modified</a>
@@ -10811,7 +10834,6 @@ imported by:
 <span class="moduletype">Package</span>  <div class="import">
 imports:
     <a href="#enum">enum</a>
- &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
 
   </div>
   <div class="import">
@@ -10891,8 +10913,7 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#http">http</a>
- &#8226;   <a href="#requests.compat">requests.compat</a>
+    <a href="#requests.compat">requests.compat</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#yt_dlp.YoutubeDL">yt_dlp.YoutubeDL</a>
  &#8226;   <a href="#yt_dlp.compat._legacy">yt_dlp.compat._legacy</a>
@@ -11748,6 +11769,7 @@ imported by:
  &#8226;   <a href="#importlib.resources._common">importlib.resources._common</a>
  &#8226;   <a href="#pkg_resources">pkg_resources</a>
  &#8226;   <a href="#pkgutil">pkgutil</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
  &#8226;   <a href="#pycparser.ply.lex">pycparser.ply.lex</a>
  &#8226;   <a href="#pycparser.ply.yacc">pycparser.ply.yacc</a>
  &#8226;   <a href="#pydoc">pydoc</a>
@@ -13921,6 +13943,10 @@ imported by:
  &#8226;   <a href="#platform">platform</a>
  &#8226;   <a href="#plistlib">plistlib</a>
  &#8226;   <a href="#posixpath">posixpath</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
  &#8226;   <a href="#pty">pty</a>
  &#8226;   <a href="#py_compile">py_compile</a>
  &#8226;   <a href="#pycparser.ply.lex">pycparser.ply.lex</a>
@@ -14833,6 +14859,7 @@ imported by:
  &#8226;   <a href="#packaging.markers">packaging.markers</a>
  &#8226;   <a href="#packaging.tags">packaging.tags</a>
  &#8226;   <a href="#pkg_resources">pkg_resources</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
  &#8226;   <a href="#pydoc">pydoc</a>
  &#8226;   <a href="#requests.help">requests.help</a>
  &#8226;   <a href="#setuptools._distutils.compat.py39">setuptools._distutils.compat.py39</a>
@@ -15069,6 +15096,151 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="psutil"></a>
+  <a target="code" href="///D:/Projects/OCDownloader/_venv/Lib/site-packages/psutil/__init__.py" type="text/plain"><tt>psutil</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imports:
+    <a href="#__future__">__future__</a>
+ &#8226;   <a href="#collections">collections</a>
+ &#8226;   <a href="#contextlib">contextlib</a>
+ &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#functools">functools</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
+ &#8226;   <a href="#psutil._psutil_windows">psutil._psutil_windows</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
+ &#8226;   <a href="#pwd">pwd</a>
+ &#8226;   <a href="#signal">signal</a>
+ &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#threading">threading</a>
+ &#8226;   <a href="#time">time</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#OCDownloader.py">OCDownloader.py</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
+ &#8226;   <a href="#psutil._psutil_windows">psutil._psutil_windows</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="psutil._common"></a>
+  <a target="code" href="///D:/Projects/OCDownloader/_venv/Lib/site-packages/psutil/_common.py" type="text/plain"><tt>psutil._common</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#__future__">__future__</a>
+ &#8226;   <a href="#collections">collections</a>
+ &#8226;   <a href="#contextlib">contextlib</a>
+ &#8226;   <a href="#ctypes">ctypes</a>
+ &#8226;   <a href="#enum">enum</a>
+ &#8226;   <a href="#errno">errno</a>
+ &#8226;   <a href="#functools">functools</a>
+ &#8226;   <a href="#inspect">inspect</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#socket">socket</a>
+ &#8226;   <a href="#stat">stat</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#threading">threading</a>
+ &#8226;   <a href="#warnings">warnings</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="psutil._compat"></a>
+  <a target="code" href="///D:/Projects/OCDownloader/_venv/Lib/site-packages/psutil/_compat.py" type="text/plain"><tt>psutil._compat</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#collections">collections</a>
+ &#8226;   <a href="#contextlib">contextlib</a>
+ &#8226;   <a href="#dummy_threading">dummy_threading</a>
+ &#8226;   <a href="#errno">errno</a>
+ &#8226;   <a href="#fcntl">fcntl</a>
+ &#8226;   <a href="#functools">functools</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#platform">platform</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#shutil">shutil</a>
+ &#8226;   <a href="#struct">struct</a>
+ &#8226;   <a href="#subprocess">subprocess</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#termios">termios</a>
+ &#8226;   <a href="#threading">threading</a>
+ &#8226;   <a href="#types">types</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="psutil._psutil_windows"></a>
+  <tt>psutil._psutil_windows</tt> <span class="moduletype"><tt>D:\Projects\OCDownloader\_venv\Lib\site-packages\psutil\_psutil_windows.pyd</tt></span>  <div class="import">
+imports:
+    <a href="#psutil">psutil</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="psutil._pswindows"></a>
+  <a target="code" href="///D:/Projects/OCDownloader/_venv/Lib/site-packages/psutil/_pswindows.py" type="text/plain"><tt>psutil._pswindows</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#collections">collections</a>
+ &#8226;   <a href="#contextlib">contextlib</a>
+ &#8226;   <a href="#enum">enum</a>
+ &#8226;   <a href="#errno">errno</a>
+ &#8226;   <a href="#functools">functools</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
+ &#8226;   <a href="#psutil._psutil_windows">psutil._psutil_windows</a>
+ &#8226;   <a href="#signal">signal</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#time">time</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#psutil">psutil</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="pty"></a>
   <a target="code" href="///C:/Users/Khen/AppData/Local/Programs/Python/Python313/Lib/pty.py" type="text/plain"><tt>pty</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -15099,6 +15271,7 @@ imported by:
  &#8226;   <a href="#netrc">netrc</a>
  &#8226;   <a href="#pathlib._local">pathlib._local</a>
  &#8226;   <a href="#posixpath">posixpath</a>
+ &#8226;   <a href="#psutil">psutil</a>
  &#8226;   <a href="#setuptools._distutils.archive_util">setuptools._distutils.archive_util</a>
  &#8226;   <a href="#setuptools._distutils.util">setuptools._distutils.util</a>
  &#8226;   <a href="#setuptools._vendor.backports.tarfile">setuptools._vendor.backports.tarfile</a>
@@ -15580,7 +15753,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#email.generator">email.generator</a>
+    <a href="#OCDownloader.py">OCDownloader.py</a>
+ &#8226;   <a href="#email.generator">email.generator</a>
  &#8226;   <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#secrets">secrets</a>
  &#8226;   <a href="#setuptools._vendor.more_itertools.more">setuptools._vendor.more_itertools.more</a>
@@ -21203,6 +21377,7 @@ imported by:
  &#8226;   <a href="#ctypes.util">ctypes.util</a>
  &#8226;   <a href="#http.server">http.server</a>
  &#8226;   <a href="#multiprocessing.util">multiprocessing.util</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
  &#8226;   <a href="#setuptools._distutils.spawn">setuptools._distutils.spawn</a>
  &#8226;   <a href="#setuptools._vendor.backports.tarfile">setuptools._vendor.backports.tarfile</a>
  &#8226;   <a href="#setuptools._vendor.jaraco.context">setuptools._vendor.jaraco.context</a>
@@ -21255,6 +21430,8 @@ imported by:
  &#8226;   <a href="#multiprocessing.process">multiprocessing.process</a>
  &#8226;   <a href="#multiprocessing.resource_sharer">multiprocessing.resource_sharer</a>
  &#8226;   <a href="#multiprocessing.resource_tracker">multiprocessing.resource_tracker</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
  &#8226;   <a href="#subprocess">subprocess</a>
  &#8226;   <a href="#unittest.signals">unittest.signals</a>
  &#8226;   <a href="#yt_dlp.downloader.websocket">yt_dlp.downloader.websocket</a>
@@ -21356,6 +21533,8 @@ imported by:
  &#8226;   <a href="#multiprocessing.reduction">multiprocessing.reduction</a>
  &#8226;   <a href="#multiprocessing.resource_sharer">multiprocessing.resource_sharer</a>
  &#8226;   <a href="#platform">platform</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
  &#8226;   <a href="#requests.adapters">requests.adapters</a>
  &#8226;   <a href="#requests.utils">requests.utils</a>
  &#8226;   <a href="#socketserver">socketserver</a>
@@ -21626,6 +21805,7 @@ imported by:
  &#8226;   <a href="#pathlib._abc">pathlib._abc</a>
  &#8226;   <a href="#pkg_resources">pkg_resources</a>
  &#8226;   <a href="#posixpath">posixpath</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
  &#8226;   <a href="#setuptools._core_metadata">setuptools._core_metadata</a>
  &#8226;   <a href="#setuptools._distutils.file_util">setuptools._distutils.file_util</a>
  &#8226;   <a href="#setuptools._shutil">setuptools._shutil</a>
@@ -21752,6 +21932,7 @@ imported by:
  &#8226;   <a href="#pickle">pickle</a>
  &#8226;   <a href="#platform">platform</a>
  &#8226;   <a href="#plistlib">plistlib</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
  &#8226;   <a href="#requests.utils">requests.utils</a>
  &#8226;   <a href="#setuptools._vendor.backports.tarfile">setuptools._vendor.backports.tarfile</a>
  &#8226;   <a href="#setuptools._vendor.packaging._elffile">setuptools._vendor.packaging._elffile</a>
@@ -21831,6 +22012,8 @@ imported by:
  &#8226;   <a href="#packaging._musllinux">packaging._musllinux</a>
  &#8226;   <a href="#packaging.tags">packaging.tags</a>
  &#8226;   <a href="#platform">platform</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
  &#8226;   <a href="#pycparser">pycparser</a>
  &#8226;   <a href="#pyi_rth_multiprocessing.py">pyi_rth_multiprocessing.py</a>
  &#8226;   <a href="#setuptools._distutils._msvccompiler">setuptools._distutils._msvccompiler</a>
@@ -21991,6 +22174,10 @@ imported by:
  &#8226;   <a href="#posixpath">posixpath</a>
  &#8226;   <a href="#pprint">pprint</a>
  &#8226;   <a href="#proxy_tools">proxy_tools</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
  &#8226;   <a href="#pty">pty</a>
  &#8226;   <a href="#py_compile">py_compile</a>
  &#8226;   <a href="#pycparser.c_ast">pycparser.c_ast</a>
@@ -22284,6 +22471,7 @@ imported by:
  &#8226;   <a href="#_pyrepl.unix_console">_pyrepl.unix_console</a>
  &#8226;   <a href="#_pyrepl.unix_eventqueue">_pyrepl.unix_eventqueue</a>
  &#8226;   <a href="#getpass">getpass</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
  &#8226;   <a href="#tty">tty</a>
 
   </div>
@@ -22385,6 +22573,9 @@ imported by:
  &#8226;   <a href="#multiprocessing.resource_tracker">multiprocessing.resource_tracker</a>
  &#8226;   <a href="#multiprocessing.synchronize">multiprocessing.synchronize</a>
  &#8226;   <a href="#multiprocessing.util">multiprocessing.util</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
  &#8226;   <a href="#pydoc">pydoc</a>
  &#8226;   <a href="#queue">queue</a>
  &#8226;   <a href="#requests.auth">requests.auth</a>
@@ -22459,6 +22650,8 @@ imported by:
  &#8226;   <a href="#multiprocessing.queues">multiprocessing.queues</a>
  &#8226;   <a href="#multiprocessing.synchronize">multiprocessing.synchronize</a>
  &#8226;   <a href="#pkg_resources">pkg_resources</a>
+ &#8226;   <a href="#psutil">psutil</a>
+ &#8226;   <a href="#psutil._pswindows">psutil._pswindows</a>
  &#8226;   <a href="#pydoc">pydoc</a>
  &#8226;   <a href="#queue">queue</a>
  &#8226;   <a href="#random">random</a>
@@ -23033,6 +23226,7 @@ imported by:
  &#8226;   <a href="#pkg_resources">pkg_resources</a>
  &#8226;   <a href="#pkgutil">pkgutil</a>
  &#8226;   <a href="#pprint">pprint</a>
+ &#8226;   <a href="#psutil._compat">psutil._compat</a>
  &#8226;   <a href="#pycparser.ply.lex">pycparser.ply.lex</a>
  &#8226;   <a href="#pycparser.ply.yacc">pycparser.ply.yacc</a>
  &#8226;   <a href="#queue">queue</a>
@@ -25376,6 +25570,7 @@ imported by:
  &#8226;   <a href="#pkg_resources">pkg_resources</a>
  &#8226;   <a href="#pkgutil">pkgutil</a>
  &#8226;   <a href="#platform">platform</a>
+ &#8226;   <a href="#psutil._common">psutil._common</a>
  &#8226;   <a href="#pty">pty</a>
  &#8226;   <a href="#pycparser.ply.yacc">pycparser.ply.yacc</a>
  &#8226;   <a href="#pycparser.plyparser">pycparser.plyparser</a>

@@ -1,18 +1,19 @@
+import os
+import webview
 import json
 import sys
-import os
 import csv
-import requests
-import re
 import threading
+import requests
 import concurrent.futures
 from tkinter import filedialog
-import webview
+import re
+import time
 from ffmpeg_progress_yield import FfmpegProgress
 from subprocess import CREATE_NO_WINDOW
 import yt_dlp as ytdl
-import time
-import asyncio
+import psutil
+import random
 
 obj_window = None
 bool_is_abort_requested = False
@@ -22,27 +23,19 @@ str_csv_path = None
 str_config_name = 'config.json'
 str_csv_name = 'OCDList.csv'
 arr_csv_field_names = ['sub_folder','artist','title','media_type_audio_or_video','max_width_in_pixels', 'url']  # csv header list
-class_cancel_flag = threading.Event()
+class_stop_event = threading.Event() 
 
-# True if a new file was uploaded valid
-# Remains false if the uploaded file was retrieved from memory or fails validation.
-bool_is_csv_validated = False 
-
-def fn_send_message(str):
+def fn_send_message(str, str_id=None):
     try:
         if obj_window:
             str_json = json.dumps(str)
-            obj_window.evaluate_js(f'fn_send_message({str_json})')            
+            str_id_json = json.dumps(str_id)
+            if str_id is None:
+                str_id = ''
+            obj_window.evaluate_js(f'fn_send_message({str_json}, {str_id_json})')        
     except Exception as ex:
         raise ex
-    
-def fn_send_queue(str, int_q_index):
-    try:
-        str_json = json.dumps(str)
-        obj_window.evaluate_js(f'fn_send_queue({str_json}, {int_q_index})')            
-    except Exception as ex:
-        raise ex
-    
+   
 class class_stream_redirector:
     def write(self, message):
         if(message.strip()):
@@ -51,18 +44,6 @@ class class_stream_redirector:
         pass
 sys.stdout = class_stream_redirector()
 sys.stderr = class_stream_redirector()
-
-def fn_get_paths():
-    global str_program_path, str_tools_path
-    try:
-        if getattr(sys, 'frozen', False):
-            str_program_path = os.path.abspath(os.path.dirname(sys.executable))
-            str_tools_path = os.path.join(str_program_path,'_internal','tools') 
-        else:
-            str_program_path = os.path.abspath(os.path.dirname(__file__))
-            str_tools_path = os.path.join(str_program_path,'tools')       
-    except Exception as ex:
-        fn_send_message(str(ex))
 
 def fn_save_settings():
     try:
@@ -86,6 +67,18 @@ def fn_load_settings():
     except Exception as ex:
         fn_send_message(str(ex))
 
+def fn_get_paths():
+    global str_program_path, str_tools_path
+    try:
+        if getattr(sys, 'frozen', False):
+            str_program_path = os.path.abspath(os.path.dirname(sys.executable))
+            str_tools_path = os.path.join(str_program_path,'_internal','tools') 
+        else:
+            str_program_path = os.path.abspath(os.path.dirname(__file__))
+            str_tools_path = os.path.join(str_program_path,'tools')       
+    except Exception as ex:
+        fn_send_message(str(ex))
+
 def fn_create_csv(e):
     try:
         str_default_csv_path = os.path.join(str_program_path, str_csv_name) 
@@ -97,19 +90,6 @@ def fn_create_csv(e):
             fn_send_message(f'{str_csv_name} created succesfully.') 
     except Exception as ex:
         fn_send_message(str(ex))
-
-def fn_upload_csv(e):
-    global bool_is_csv_validated
-    global str_csv_path 
-    uploaded_file = filedialog.askopenfilename( 
-        initialdir = "/", 
-        title = "OCDownloader: Select a CSV File", 
-        filetypes = [("CSV files", "*.csv")] 
-    )
-    if(fn_mt_validate_csv(uploaded_file)): 
-        str_csv_path = uploaded_file
-        fn_save_settings()
-        bool_is_csv_validated = True
 
 def fn_is_url_reachable(url):
     try:
@@ -160,45 +140,65 @@ def fn_validate_row(row, int_row_index):
         fn_send_message(str(ex))
 
 def fn_mt_validate_csv(path):
-    global bool_is_csv_validated
+    class_stop_event.clear()
     try:
         fn_send_message("Performing CSV validation. Each URL is being tested as well. Please wait.")
-        if path:
-            if os.path.exists(path):
-                with open(path, 'r', newline='', encoding='utf-8') as upfile:
-                    reader = csv.reader(upfile)
-                    headers = next(reader)
+        if not path or not os.path.exists(path):
+            fn_send_message("Invalid path or file does not exist.")
+            return False
 
-                    if headers != arr_csv_field_names:
-                        fn_send_message(f"Invalid headers. The file should only contain these headers: {arr_csv_field_names}")
+        with open(path, 'r', newline='', encoding='utf-8') as upfile:
+            reader = csv.reader(upfile)
+            headers = next(reader)
+
+            if headers != arr_csv_field_names:
+                fn_send_message(f"Invalid headers. Expected: {arr_csv_field_names}")
+                return False
+
+            list_csv_rows = list(reader)
+            int_list_length = len(list_csv_rows)
+            fn_send_message(f'{int_list_length} rows are being validated')
+
+            bool_total_check = True
+            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+                futures = {
+                    executor.submit(fn_validate_row, row, idx): idx
+                    for idx, row in enumerate(list_csv_rows, start=1)
+                }
+
+                for future in concurrent.futures.as_completed(futures):
+                    if class_stop_event.is_set():  
+                        fn_send_message("Operation stopped by user.")
+                        executor.shutdown(wait=False)  # Force stop all running tasks
                         return False
                     
-                    rows_to_validate = list(reader)
-                    int_rows_for_validation = len(rows_to_validate)
-                    int_validated_rows = 0
-                    fn_send_message(f'{int_rows_for_validation} rows are being validated')
-                    bool_total_check = True
+                    bool_is_row_valid = future.result()
+                    fn_send_message(f'[Validating] {futures[future]}/{int_list_length}')
                     
-                    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-                        results = [
-                            executor.submit(fn_validate_row, row, row_index) for row_index, row in enumerate(rows_to_validate, start=1)
-                            ]
-                        for future in concurrent.futures.as_completed(results):
-                            bool_is_row_valid = future.result()
-                            int_validated_rows += 1
-                            fn_send_message(f'[Validating] {int_validated_rows}/{int_rows_for_validation}')
-                            if not bool_is_row_valid:
-                                bool_total_check = False
-                    
-                    if bool_total_check:
-                        fn_send_message('CSV contents are valid.')
-                        bool_is_csv_validated = True
-                    else:
-                        fn_send_message('CSV contents are invalid.')
-                        bool_is_csv_validated = False
-                    return bool_total_check
+                    if not bool_is_row_valid:
+                        bool_total_check = False
+
+            if bool_total_check:
+                fn_send_message("CSV is valid.")
+            
+            return bool_total_check
+
     except Exception as ex:
         fn_send_message(str(ex))
+
+def fn_upload_csv(e):
+    global str_csv_path 
+    uploaded_file = filedialog.askopenfilename( 
+        initialdir = "/", 
+        title = "OCDownloader: Select a CSV File", 
+        filetypes = [("CSV files", "*.csv")] 
+    )
+    if(fn_mt_validate_csv(uploaded_file)): 
+        str_csv_path = uploaded_file
+        fn_save_settings()
+
+def abort(e):
+    class_stop_event.set()
 
 def fn_check_working_csv():
     try:
@@ -208,156 +208,61 @@ def fn_check_working_csv():
     except Exception as ex:
         fn_send_message(str(ex))
 
-def orig_fn_download_file(row, int_row_index, int_row_count):
-    int_message_index = int(time.time() * 1000)
+def fn_download_file(list_row, int_row_index, int_row_count, int_message_index):
+
+    sub_folder = list_row[0]
+    artist = list_row [1]
+    title = list_row [2]
     str_queue_pos = f'{int_row_index}/{int_row_count}'
-
-    try:
-               
-        str_downloads_path = os.path.join(str_program_path, 'Downloads')
-        str_ffmpeg_path = os.path.join(str_tools_path, 'ffmpeg.exe')
-        sub_folder = row[0]
-        if sub_folder:
-            sub_folder_parts = re.split(r'[\\\/]', sub_folder)
-            sub_folder = os.sep.join(sub_folder_parts)
-        artist = row [1]
-        title = row [2]
-        media_type = row[3]
-        max_width_in_pixels = int(row[4]) if media_type == 'video' else 0
-        url = row[5]
-        
-        sub_folder_path = os.path.join(str_downloads_path, sub_folder)
-        os.makedirs(sub_folder_path, exist_ok=True)
-        
-        final_filename = f"{artist} - {title}" 
-        ydl_opts_check = {
-            'ffmpeg_location': str_ffmpeg_path,
-            'quiet': True,
-        }
-        
-        fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title}', int_message_index)
-        
-        with ytdl.YoutubeDL(ydl_opts_check) as ydl:
-        
-            info_dict = ydl.extract_info(url, download=False)
-            formats = info_dict.get('formats', [])
-            best_format = None
-            lowest_width_threshold = 80 * max_width_in_pixels
-            str_final_path_to_check = os.path.join(sub_folder_path, f"{final_filename}.mp3")
-            
-            if media_type == 'video':
-                str_final_path_to_check = os.path.join(sub_folder_path, f"{final_filename}.mp4")
-            
-            if os.path.exists(str_final_path_to_check):
-                fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Aborted]', int_message_index)
-                return
-
-            if media_type == 'video':
-                fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Looking for stream]', int_message_index)
-                best_format = None
-                for format in formats:
-                    if format.get('ext') == 'mp4' and format.get('vcodec') != 'none' and format.get('acodec') != 'none':
-                        if lowest_width_threshold < format.get('width', 0) <= max_width_in_pixels:
-                            if best_format is None or format.get('width') > best_format.get('width'):
-                                best_format = format
-
-            if best_format:
-
-                fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Found format: {best_format["ext"]}]', int_message_index)
-                ydl_opts = { 
-                    'outtmpl': os.path.join(sub_folder_path, f"{final_filename}.%(ext)s"),
-                    'ffmpeg_location': str_ffmpeg_path,
-                    'no_warnings': True,
-                    'format': best_format['format_id'],
-                    'quiet': True,
-                }
-                fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Downloading]', int_message_index) 
-                fn_send_message('[enable_spinner]')
-                with ytdl.YoutubeDL(ydl_opts) as ydl:
-                    ydl.download([url])
-            
-            else:
-                ydl_opts = {
-                    'outtmpl': os.path.join(sub_folder_path, f"{final_filename}.%(ext)s"),
-                    'ffmpeg_location': str_ffmpeg_path,
-                    'no_warnings': True,
-                    'overwrites': True,
-                }
-                if media_type == 'audio':
-                    ydl_opts.update({'format': 'bestaudio/best'})
-                elif media_type == 'video':
-                    format_string = f'bestvideo[width<={max_width_in_pixels}]+bestaudio/best'
-                    ydl_opts.update({'format': format_string})
-                else:
-                    raise ValueError("Invalid media type. Choose 'audio' or 'video'.")
-                if media_type == 'video':
-                    fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Downloading A/V Stream to Merge]', int_message_index)
-                else:
-                    fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Downloading Audio Stream]', int_message_index)
-                fn_send_message('[enable_spinner]')
-                with ytdl.YoutubeDL(ydl_opts) as ydl:
-                    result = ydl.download([url])
-                    if result == 0 and media_type == 'audio':
-                        info_dict = ydl.extract_info(url, download=False)
-                        str_file_path = ydl.prepare_filename(info_dict)
-                        str_file_extension = os.path.splitext(str_file_path)[1][1:]
-                        fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Downloaded File Extension is {str_file_extension}]', int_message_index) 
-                        downloaded_file = os.path.join(sub_folder_path, f"{final_filename}.{str_file_extension}")
-                        fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Converting to MP3]', int_message_index)
-                        ffmpeg_cmd = [str_ffmpeg_path, '-i', downloaded_file, '-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp3")]
-                        ff = FfmpegProgress(ffmpeg_cmd)
-                        for progress in ff.run_command_with_progress({"creationflags":CREATE_NO_WINDOW}):
-                            fn_send_message(f"[Conversion Progress]: {int(progress)}%")
-                        os.remove(downloaded_file)
-                    elif result == 0 and media_type == 'video':
-                        info_dict = ydl.extract_info(url, download=False)
-                        str_file_path = ydl.prepare_filename(info_dict)
-                        str_file_extension = os.path.splitext(str_file_path)[1][1:]
-                        fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Downloaded File Extension is {str_file_extension}]', int_message_index) 
-                        downloaded_file = os.path.join(sub_folder_path, f"{final_filename}.{str_file_extension}")
-                        fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Converting to MP4]', int_message_index)
-                        ffmpeg_cmd = [str_ffmpeg_path, '-i', downloaded_file,'-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp4")]
-                        ff = FfmpegProgress(ffmpeg_cmd)
-                        for progress in ff.run_command_with_progress({"creationflags":CREATE_NO_WINDOW}):
-                            fn_send_message(f"[Conversion Progress]: {int(progress)}%")
-                        os.remove(downloaded_file)
-
-        return True
-    except Exception as ex:
-        fn_send_message(str(ex))
-
-def fn_download_file(row, int_row_index, int_row_count, int_message_index):
-    global bool_is_abort_requested
-    if bool_is_abort_requested:
-        fn_send_queue(f'{str_queue_pos} {sub_folder}: {row [1]} - {row [2]} [Aborted. Manually aborted.]', int_message_index)
+    str_message_prefix = f'[{str_queue_pos} {sub_folder}: {artist} - {title}]: '        
+    str_message_index = str(int_message_index)
+    if class_stop_event.is_set():  # Check at the start
+        fn_send_message(f"{str_message_prefix} Skipped", str_message_index)        
         return
-    str_queue_pos = f'{int_row_index}/{int_row_count}'
     
-    try:
-               
+    try:    
         str_downloads_path = os.path.join(str_program_path, 'Downloads')
-        str_ffmpeg_path = os.path.join(str_tools_path, 'ffmpeg.exe')
-        sub_folder = row[0]
+        str_ffmpeg_path = os.path.join(str_tools_path, 'ffmpeg.exe')        
         if sub_folder:
             sub_folder_parts = re.split(r'[\\\/]', sub_folder)
             sub_folder = os.sep.join(sub_folder_parts)
-        artist = row [1]
-        title = row [2]
-        media_type = row[3]
-        max_width_in_pixels = int(row[4]) if media_type == 'video' else 0
-        url = row[5]
+       
+        media_type = list_row[3]
+        max_width_in_pixels = int(list_row[4]) if media_type == 'video' else 0
+        url = list_row[5]
         
+        if class_stop_event.is_set():
+            fn_send_message(f'{str_message_prefix} Aborted by user', str_message_index)
+            return
+
         sub_folder_path = os.path.join(str_downloads_path, sub_folder)
         os.makedirs(sub_folder_path, exist_ok=True)
-        
+
+        def fn_yt_dlp_progress_hook(d):
+            if 'status' in d:
+                message = f"[{d['status'].capitalize()}] {d.get('filename', 'Unknown file')}"
+                modified_message = f'{str_message_prefix}' + message  # Append custom string
+                fn_send_message(modified_message, str_message_index)  # Send modified message
+
+        class class_yt_dlp_CustomLogger:
+            def debug(self, msg):
+                self._log(msg)            
+            def info(self, msg):
+                self._log(msg)
+            def warning(self, msg):
+                self._log(msg)
+            def error(self, msg):
+                self._log(msg)
+            def _log(self, msg):
+                message =  f'{str_message_prefix} ' + msg
+                fn_send_message(message, str_message_index)
+
         final_filename = f"{artist} - {title}" 
         ydl_opts_check = {
             'ffmpeg_location': str_ffmpeg_path,
             'quiet': True,
         }
-        
-        fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title}', int_message_index)
-        
+                
         with ytdl.YoutubeDL(ydl_opts_check) as ydl:
         
             info_dict = ydl.extract_info(url, download=False)
@@ -370,11 +275,11 @@ def fn_download_file(row, int_row_index, int_row_count, int_message_index):
                 str_final_path_to_check = os.path.join(sub_folder_path, f"{final_filename}.mp4")
             
             if os.path.exists(str_final_path_to_check):
-                fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Aborted. File exists]', int_message_index)
+                fn_send_message(f'{str_message_prefix} Aborted. File exists', int_message_index)
                 return
 
             if media_type == 'video':
-                fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Looking for stream]', int_message_index)
+                fn_send_message(f'{str_message_prefix} Looking for stream', int_message_index)
                 best_format = None
                 for format in formats:
                     if format.get('ext') == 'mp4' and format.get('vcodec') != 'none' and format.get('acodec') != 'none':
@@ -384,16 +289,24 @@ def fn_download_file(row, int_row_index, int_row_count, int_message_index):
 
             if best_format:
 
-                fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Found format: {best_format["ext"]}]', int_message_index)
+                fn_send_message(f'{str_message_prefix} Found format: {best_format["ext"]}', int_message_index)
                 ydl_opts = { 
                     'outtmpl': os.path.join(sub_folder_path, f"{final_filename}.%(ext)s"),
                     'ffmpeg_location': str_ffmpeg_path,
                     'no_warnings': True,
                     'format': best_format['format_id'],
                     'quiet': True,
+                    'progress_hooks': [fn_yt_dlp_progress_hook],  # Hook for progress updates
+                    'logger': class_yt_dlp_CustomLogger(),
                 }
-                fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Downloading]', int_message_index) 
-                fn_send_message('[enable_spinner]')
+
+                if class_stop_event.is_set():
+                    fn_send_message(f"{str_message_prefix} Aborted by user", int_message_index)
+                    return
+
+                fn_send_message(f'{str_message_prefix} Downloading', int_message_index) 
+                fn_send_message('[enable_spinner]')             
+
                 with ytdl.YoutubeDL(ydl_opts) as ydl:
                     ydl.download([url])
             
@@ -403,6 +316,8 @@ def fn_download_file(row, int_row_index, int_row_count, int_message_index):
                     'ffmpeg_location': str_ffmpeg_path,
                     'no_warnings': True,
                     'overwrites': True,
+                    'progress_hooks': [fn_yt_dlp_progress_hook],  # Hook for progress updates
+                    'logger': class_yt_dlp_CustomLogger(),
                 }
                 if media_type == 'audio':
                     ydl_opts.update({'format': 'bestaudio/best'})
@@ -411,10 +326,15 @@ def fn_download_file(row, int_row_index, int_row_count, int_message_index):
                     ydl_opts.update({'format': format_string})
                 else:
                     raise ValueError("Invalid media type. Choose 'audio' or 'video'.")
+                
+                if class_stop_event.is_set():
+                    fn_send_message(f"{str_message_prefix} Aborted by user", int_message_index)
+                    return
+                
                 if media_type == 'video':
-                    fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Downloading A/V Stream to Merge]', int_message_index)
+                    fn_send_message(f'{str_message_prefix} Downloading A/V Stream to Merge', int_message_index)
                 else:
-                    fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Downloading Audio Stream]', int_message_index)
+                    fn_send_message(f'{str_message_prefix} Downloading Audio Stream', int_message_index)
                 fn_send_message('[enable_spinner]')
                 with ytdl.YoutubeDL(ydl_opts) as ydl:
                     result = ydl.download([url])
@@ -422,120 +342,172 @@ def fn_download_file(row, int_row_index, int_row_count, int_message_index):
                         info_dict = ydl.extract_info(url, download=False)
                         str_file_path = ydl.prepare_filename(info_dict)
                         str_file_extension = os.path.splitext(str_file_path)[1][1:]
-                        fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Downloaded File Extension is {str_file_extension}]', int_message_index) 
+                        fn_send_message(f'{str_message_prefix} Downloaded File Extension is {str_file_extension}', int_message_index) 
                         downloaded_file = os.path.join(sub_folder_path, f"{final_filename}.{str_file_extension}")
-                        fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Converting to MP3]', int_message_index)
+                        fn_send_message(f'{str_message_prefix} Converting to MP3', int_message_index)
                         ffmpeg_cmd = [str_ffmpeg_path, '-i', downloaded_file, '-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp3")]
                         ff = FfmpegProgress(ffmpeg_cmd)
                         for progress in ff.run_command_with_progress({"creationflags":CREATE_NO_WINDOW}):
-                            fn_send_message(f"[Conversion Progress]: {int(progress)}%")
+                            fn_send_message(f"{str_message_prefix} Converting {str_message_prefix} {int(progress)}%",int_message_index)
                         os.remove(downloaded_file)
                     elif result == 0 and media_type == 'video':
                         info_dict = ydl.extract_info(url, download=False)
                         str_file_path = ydl.prepare_filename(info_dict)
                         str_file_extension = os.path.splitext(str_file_path)[1][1:]
-                        fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Downloaded File Extension is {str_file_extension}]', int_message_index) 
+                        fn_send_message(f'{str_message_prefix} Downloaded File Extension is {str_file_extension}]', int_message_index) 
                         downloaded_file = os.path.join(sub_folder_path, f"{final_filename}.{str_file_extension}")
-                        fn_send_queue(f'{str_queue_pos} {sub_folder}: {artist} - {title} [Converting to MP4]', int_message_index)
+                        fn_send_message(f'{str_message_prefix} Converting to MP4', int_message_index)
                         ffmpeg_cmd = [str_ffmpeg_path, '-i', downloaded_file,'-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp4")]
                         ff = FfmpegProgress(ffmpeg_cmd)
                         for progress in ff.run_command_with_progress({"creationflags":CREATE_NO_WINDOW}):
-                            fn_send_message(f"[Conversion Progress]: {int(progress)}%")
+                            break
+                        fn_send_message(f"{str_message_prefix} Converting {int(progress)}%",int_message_index)
                         os.remove(downloaded_file)
-
+                    fn_send_message(f'{str_message_prefix} Done', int_message_index) 
         return True
-    except Exception as ex:
-        fn_send_message(str(ex))
-
-def orig_fn_mt_download_from_csv(e):
-    global bool_is_abort_requested
-    try:
-        if not fn_mt_validate_csv(str_csv_path):
-            fn_send_message('Download Cancelled Due To Validation Issues.')
-            return
-        with open(str_csv_path, mode='r', newline='') as file:
-                    
-            reader = csv.reader(file)
-            headers = next(reader)
-            rows_to_validate = list(reader)
-            int_rows_for_validation = len(rows_to_validate)
-            fn_send_message(f'Downloading {int_rows_for_validation} items.')           
-            
-            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-                results = [
-                        executor.submit(fn_download_file, row, row_index, int_rows_for_validation) for row_index, row in enumerate(rows_to_validate, start=1)
-                    ]
-                for future in concurrent.futures.as_completed(results):
-                    result = future.result()
-        fn_send_message('[disable_spinner]')
-        fn_send_message("Download and conversion complete.")
-        fn_send_queue("Download and conversion complete.")
     except Exception as ex:
         fn_send_message(str(ex))
 
 def fn_mt_download_from_csv(e):
-    global bool_is_abort_requested
+    class_stop_event.clear()
+    """
+    Handles multi-threaded downloading from a CSV file.
+
+    Preceding steps before starting multi-threading:
+    
+    1. **Validate the CSV file**  
+       - Calls `fn_mt_validate_csv(str_csv_path)`, which checks if the CSV format is correct.  
+       - If validation fails, sends a message to the GUI and stops execution.
+    
+    2. **Open the CSV file**  
+       - Reads the file using `csv.reader(file)`.  
+       - Extracts headers and ensures the structure matches expectations.  
+       - Converts all rows into a list for processing.
+
+    3. **Count and notify total downloads**  
+       - Counts the number of rows in the CSV.  
+       - Sends a message to the GUI about the number of items being downloaded.
+
+    Once these steps are complete, the function proceeds to launch multiple downloads
+    using `concurrent.futures.ThreadPoolExecutor()`.
+    """
+    
     try:
+        # Step 1: Validate the CSV file
         if not fn_mt_validate_csv(str_csv_path):
             fn_send_message('Download Cancelled Due To Validation Issues.')
-            return
-        with open(str_csv_path, mode='r', newline='') as file:
-                    
-            reader = csv.reader(file)
-            headers = next(reader)
-            rows_to_validate = list(reader)
-            int_rows_for_validation = len(rows_to_validate)
-            fn_send_message(f'Downloading {int_rows_for_validation} items.')           
-            
-            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-                results = []
-                for row_index, row in enumerate(rows_to_validate, start=1):
-                    
-                    if bool_is_abort_requested:
-                        break
-                    
-                    int_message_index = int(time.time() * 1000)
-                    fn_send_queue(f'{row_index} {int_rows_for_validation}: {row[1]} - {row[2]}', int_message_index)
-                    future = executor.submit(fn_download_file, row, row_index, int_rows_for_validation, int_message_index)
-                    results.append(future)
+            return        
 
-                for future in concurrent.futures.as_completed(results):
-                    result = future.result()
-        
-        if bool_is_abort_requested:
-            fn_send_message("Download Aborted by User.")
-            bool_is_abort_requested = False
-            return 
+        # Step 2: Open the CSV file and prepare data
+        with open(str_csv_path, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            headers = next(reader)  # Read the first row (header)
+            list_csv_rows = list(reader)  # Store all rows in a list
+            int_list_length = len(list_csv_rows)  # Get total number of downloads
+            
+            # Step 3: Notify GUI about the number of downloads
+            fn_send_message(f'Downloading {int_list_length} items.')           
+
+            # Step 4: Proceed to multi-threaded execution using ThreadPoolExecutor
+            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+                futures = {
+                    executor.submit(fn_download_file, list_row, int_row_index, int_list_length, str(int(time.time() * 1000))+str(random.randrange(100000, 1000000))): int_row_index
+                    for int_row_index, list_row in enumerate(list_csv_rows, start=1)
+                }
+
+                for future in concurrent.futures.as_completed(futures):
+                    if class_stop_event.is_set():
+                        fn_send_message("Operation stopped by user.")
+                        executor.shutdown(wait=False)  # Stop all downloads immediately
+                        return
+                    
+                    result = future.result()  # Ensure completed downloads are processed
+
         fn_send_message('[disable_spinner]')
         fn_send_message("Download and conversion complete.")
-        fn_send_queue("Download and conversion complete.", int(time.time() * 1000))
+
     except Exception as ex:
         fn_send_message(str(ex))
 
-def abort(e):  # Function to abort the operation
-    global bool_is_abort_requested
-    bool_is_abort_requested = True
+def fn_terminate_processes():
+    target_processes = ["ffmpeg.exe"]
 
+    for proc in psutil.process_iter(attrs=["pid", "name"]):
+        try:
+            if proc.info["name"].lower() in target_processes:
+                fn_send_message(f"Terminating {proc.info['name']} (PID: {proc.pid})")
+                proc.terminate()
+                proc.wait(timeout=3)
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            continue
 
-def bind(obj_window):
-    try:
-        fn_load_settings()
-        fn_send_message(f'Initializing...')
-        fn_check_working_csv()
-        fn_send_message(f'Initialized.')
-        btn_create_csv = obj_window.dom.get_element('#btn_create_csv')
-        btn_create_csv.on('click', lambda e: fn_create_csv(e))       
-        btn_upload_csv = obj_window.dom.get_element('#btn_upload_csv')
-        btn_upload_csv.on('click', lambda e: fn_upload_csv(e))
-        btn_download_from_csv = obj_window.dom.get_element('#btn_download_from_csv')
-        btn_download_from_csv.on('click', lambda e: fn_mt_download_from_csv(e))
-        btn_abort = obj_window.dom.get_element('#btn_abort')
-        btn_abort.on('click', lambda e: abort(e))
-    except Exception as ex:
-        fn_send_message(str(ex))
+    for proc in psutil.process_iter(attrs=["pid", "name"]):
+        try:
+            if proc.info["name"].lower() in target_processes:
+                fn_send_message(f"Forcing kill on {proc.info['name']} (PID: {proc.pid})")
+                proc.kill()
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            continue
+
+bool_is_closing = False  # Global flag to prevent multiple executions
+def fn_on_closing():
+    """
+    Handles window close event in PyWebView, ensuring proper cleanup before exiting.
+
+    Findings on how PyWebView handles events:
+    - The `closing` event can **fire multiple times** before the window actually closes.
+    - Blocking operations like `time.sleep()` in the main thread cause the UI to **freeze (Not Responding)**.
+    - WebView does **not automatically close the window** if `closing` returns `False`, requiring manual closure.
+
+    Solution:
+    - Uses `is_closing` to **prevent multiple triggers** of the close event.
+    - Runs cleanup in a separate thread to **avoid UI freeze**.
+    - Calls `obj_window.destroy()` to **manually close the window** after cleanup.
+    - Uses `os._exit(0)` to **ensure all processes terminate cleanly**.
+    """
+    global bool_is_closing
+    if bool_is_closing:
+        return False  # Prevent multiple triggers
+    bool_is_closing = True  # Set flag to prevent re-entry
+    def cleanup():
+        """
+        Performs cleanup before closing the application.
+        - Sends a message to the UI.
+        - Waits to allow the message to be processed.
+        - Terminates processes and closes the window.
+        """
+        fn_send_message("Closing application and terminating processes...")
+        time.sleep(1)  # Allow time for message to be sent
+        fn_terminate_processes()
+        obj_window.destroy()  # Manually close the window
+        os._exit(0)  # Ensure full shutdown
+    threading.Thread(target=cleanup, daemon=True).start()  # Run cleanup in background
+    return True  # Allow the window to close after cleanup starts
+
+def fn_bind(obj_window):
+    fn_load_settings()
+    fn_send_message('Initializing...')
+    fn_check_working_csv()
+    fn_send_message('Initialized.')
+    btn_create_csv = obj_window.dom.get_element('#btn_create_csv')
+    btn_create_csv.on('click', lambda e: fn_create_csv(e))  
+    btn_upload_csv = obj_window.dom.get_element('#btn_upload_csv')
+    btn_upload_csv.on('click', lambda e: fn_upload_csv(e))
+    btn_download_from_csv = obj_window.dom.get_element('#btn_download_from_csv')
+    btn_download_from_csv.on('click', lambda e: fn_mt_download_from_csv(e))    
+    btn_abort = obj_window.dom.get_element('#btn_abort')
+    btn_abort.on('click', lambda e: abort(e))
+    obj_window.events.closing += lambda: fn_on_closing()
+    return
 
 if __name__ == '__main__':
     fn_get_paths()
-    str_html_path = os.path.join(str_tools_path,'home.html')
-    obj_window = webview.create_window('OCDownloader', str_html_path, width=800, height=800, )
-    webview.start(bind, obj_window)
+    str_html_path = os.path.join(str_tools_path, 'home.html')
+    obj_window = webview.create_window(
+        'OCDownloader',
+        str_html_path,
+        width=800,
+        height=800,
+        )
+    
+    webview.start(fn_bind, obj_window, debug=False)
