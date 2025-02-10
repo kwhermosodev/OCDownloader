@@ -2,53 +2,35 @@ import os
 import subprocess
 import shutil
 import zipfile
-from bs4 import BeautifulSoup
 import sys
 
 str_project_name = 'OCDownloader'
 str_program_path = os.path.abspath(os.path.dirname(__file__))
-str_info_html_path = os.path.join(str_program_path,'tools','home.html')
+str_info_js_path = os.path.join(str_program_path,'tools','home.js')
 
 def get_python_version():
-    version = sys.version.split()[0]  # Get the first part of the version string
-    return f"python - {version}"
+    return sys.version_info.major, sys.version_info.minor, sys.version_info.micro
 
 def get_pip_list():
-    """Returns a list of installed pip packages with their versions."""
-    result = subprocess.run(['pip', 'list'], stdout=subprocess.PIPE, text=True)
-    pip_list = result.stdout.splitlines()[2:]  # Skip the header
-    return [f"{pkg.split()[0]} - {pkg.split()[1]}" for pkg in pip_list]
+    result = subprocess.run([sys.executable, '-m', 'pip', 'list'], stdout=subprocess.PIPE)
+    return result.stdout.decode()
 
-def update_html_with_lib_versions(str_path_to_html, str_ul_id):
-    """Modifies the HTML file by adding a list of Python and pip library versions."""
-    # Create the arr_lib array
-    arr_lib = []
-    arr_lib.append(get_python_version())  # Add Python version
-    arr_lib.extend(get_pip_list())  # Add pip packages and versions
-
-    # Open the HTML file and parse it with BeautifulSoup
-    with open(str_path_to_html, 'r') as file:
-        soup = BeautifulSoup(file, 'html.parser')
-
-    # Find the <ul> tag by id and add the new <li> elements
-    ul = soup.find('ul', id=str_ul_id)
-    if ul:
-        ul.clear()
-        for lib_version in arr_lib:
-            li = soup.new_tag('li')
-            li.string = lib_version
-            ul.append(li)
-    else:
-        print(f"Unordered list with id '{str_ul_id}' not found in the HTML.")
-
-    # Save the modified HTML file
-    with open(str_path_to_html, 'w') as file:
-        file.write(str(soup))
+def update_home_js():
+    python_version = '.'.join(map(str, get_python_version()))
+    pip_list = get_pip_list()
+    with open(str_info_js_path, 'r', encoding='utf-8') as file:
+        content = file.read()
+    start_index = content.find('arr_libraries = [') + len('arr_libraries = [')
+    end_index = content.find('];', start_index)
+    
+    if start_index != -1 and end_index != -1:
+        updated_content = content[:start_index] + f'"{python_version}", "{pip_list.replace("\n", '", "').strip()}"' + content[end_index:]
+        with open(str_info_js_path, 'w', encoding='utf-8') as file:
+            file.write(updated_content)
 
 def bundle_project(str_project_name):
-
+    
     str_parent_path = os.path.dirname(os.path.abspath(__file__))
-    #str_python_path = os.path.join(str_parent_path,'_venv','Scripts', 'python.exe')
     str_pyinstraller_path = os.path.join(str_parent_path,'_venv','Scripts', 'pyinstaller.exe')
     str_bundle_path =  os.path.join(str_parent_path, 'bundle')
     str_dist_path = os.path.join(str_bundle_path,'dist')
@@ -57,15 +39,11 @@ def bundle_project(str_project_name):
     str_icon_path = os.path.join(str_parent_path,'tools','ico.ico')
     str_script_path = os.path.join(str_parent_path, str_project_name + '.py')
 
-    # pyinstaller command as array
     pyinstaller_cmd = [
-        #f'{str_python_path}',
-        #'-m',
         f'{str_pyinstraller_path}',
         '--onedir',
         '--noconsole',
         '--windowed',
-        #'--debug=all',
         f'--distpath={str_dist_path}',
         f'--workpath={str_build_path}',
         f'--specpath={str_bundle_path}',
@@ -76,7 +54,7 @@ def bundle_project(str_project_name):
     pyinstaller_cmd.append(str_script_path)
 
     if(os.path.exists(str_bundle_path)):
-        shutil.rmtree(str_bundle_path) # remove old bundle   
+        shutil.rmtree(str_bundle_path)
     
     subprocess.run(pyinstaller_cmd, check=True)
 
@@ -95,5 +73,5 @@ def compress_folder(input_folder, output_zip_file):
                 zipf.write(abs_path, rel_path)
 
 if __name__ == "__main__":
-    update_html_with_lib_versions(str_info_html_path, 'ul_libraries')
+    update_home_js()
     bundle_project(str_project_name)

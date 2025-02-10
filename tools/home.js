@@ -1,61 +1,49 @@
 $(document).ready(function () {
-
+    fn_console_resize();
+    $(window).on('resize', function () {
+        fn_console_resize();
+    })
 })
 
-function fn_append_list_item(str, str_ul_id) {
-    return new Promise(function (resolve, reject) {
-        try {
-            $("#" + str_ul_id).append('<li ${name}class="user-select">' + str + '</li>');
-            resolve();
-        } catch (error) {
-            reject(error);
-        }
-    })
+function fn_console_resize() {
+
+    const arr_ctrl_fixed_heights = [
+        $("#h1_title").innerHeight(),
+        $("#ul_tab_list").innerHeight(),
+        $('#div_ctrl').innerHeight(),
+    ]
+
+    const arr_abt_fixed_heights = [
+        $("#h1_title").innerHeight(),
+        $("#ul_tab_list").innerHeight()
+    ]
+
+    const flt_ctrl_fixed_heights = arr_ctrl_fixed_heights.reduce((a, b) => a + b, 0)
+    const flt_abt_fixed_heights = arr_abt_fixed_heights.reduce((a, b) => a + b, 0)
+    const win_in_height = window.innerHeight;
+    $('#div_csl').innerHeight(win_in_height - flt_ctrl_fixed_heights - 100);
+    $('#div_abt').innerHeight(win_in_height - flt_abt_fixed_heights - 100);
 }
 
-function fn_update_last_list_item(str, str_prefix, str_ul_id) {
-    return new Promise(function (resolve, reject) {
-        try {
-            let $li_last_li = $("#" + str_ul_id + " li:last");
-            if ($li_last_li.length > 0) {
-                let str_last_str = $li_last_li.text();
-                if (str_last_str.startsWith(str_prefix) && str.startsWith(str_prefix)) {
-                    $li_last_li.text(str)
-                } else {
-                    fn_append_list_item(str, str_ul_id)
-                }
-            } else {
-                fn_append_list_item(str, str_ul_id)
-            }
-            resolve();
-        } catch (error) {
-            reject(error);
+function fn_send_message(str_message, str_li_id){
+    if(str_li_id && str_li_id.length > 0){
+        $li = $(`#${str_li_id}`);
+        if($li.length > 0){
+            $li.text(str_message);
+        }else{
+            fn_append_message(str_message, str_li_id);
         }
-    })
+    }else{
+        fn_append_message(str_message, '');
+    }    
 }
 
-function fn_send_message(str, str_message_id = null) {
-    return new Promise(function (resolve, reject) {
-        try {
-            if (str_message_id) {
-                $li_message_li = $("#" + str_message_id);
-                if ($li_message_li.length > 0) {
-                    $li_message_li.text(str);
-                } else {
-                    $("#ul_console_list").append(`<li id="${str_message_id}" class="no-wrap user-select">` + str + '</li>');
-                }
-            } else if (str.startsWith('[Validating]')) {
-                fn_update_last_list_item(str, '[Validating]', "ul_console_list")
-            } else if (str.startsWith('[enable_spinner]')) {
-                $('#div_busy').show();
-            } else if (str.startsWith('[disable_spinner]')) {
-                $('#div_busy').hide();
-            } else {
-                fn_append_list_item(str, 'ul_console_list');
-            }
-            resolve();
-        } catch (error) {
-            reject(error);
-        }
-    })
+function fn_append_message(str_message, str_li_id){
+    if(str_li_id.length > 0){
+        $("#ul_csl").append(`<li id=${str_li_id}>${str_message}</li>`)
+    }else{
+        $("#ul_csl").append(`<li>${str_message}</li>`)
+    }    
 }
+
+arr_libraries = []

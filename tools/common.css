@@ -3,71 +3,31 @@
     src: url('Minecraft.ttf');
 }
 
-#div_busy{
-    display: none;
+.text-pixelated {
+    font-family: 'pixelated';
 }
 
 .color-neon {
     color: #74ee15;
 }
 
-.fullvh {
-    height: 100vh;
-    overflow: scroll;
-}
-
-.text-pixelated {
-    font-family: 'pixelated';
-}
-
 .btn-dark {
-    background-color: #1f1f1f !important;
-}
-
-.btn-neon {
-    background-color: #74ee15 !important;
-}
-
-.bg-dark {
-    background-color: #181818 !important;
-}
-
-.console-box {
-    height: 40vh;
     border-style: solid;
-    border-width: 2px;
     border-color: #74ee15;
-    border-radius: 0.5em;
-    overflow-y: scroll;
 }
 
-.overflow-x-scroll{
-    overflow-x: scroll;
-}
-
-.info-box {
-    height:  50vh;
+.console-box{
     border-style: solid;
-    border-width: 2px;
     border-color: #74ee15;
-    border-radius: 0.5em;
+    border-width: 1px;
+    border-radius: 0.3em;
     overflow-y: scroll;
     overflow-x: scroll;
+    min-height: 400px;
 }
 
-.text-smaller{
-    font-size: small;
-}
-
-.user-select {
-    user-select: text;
-}
-
-.no-wrap{
+.console-list{
     white-space: nowrap;
-}
-.mw-800 {
-    max-width: 600px;
 }
 
 ::-webkit-scrollbar {
@@ -89,18 +49,4 @@
 
 ::-webkit-scrollbar-corner {
     background-color: #18181800;
-}
-
-.max-width-600px{
-    width: 600px;
-    max-width: 100%;
-}
-
-.max-height-600px{
-    height: 300px;
-    max-height:  100%;
-}
-
-.overflow-y-scroll{
-    overflow-y: scroll;
 }
