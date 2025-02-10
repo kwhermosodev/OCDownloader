@@ -16,7 +16,7 @@
     border-color: #74ee15;
 }
 
-.console-box{
+.console-box {
     border-style: solid;
     border-color: #74ee15;
     border-width: 1px;
@@ -26,7 +26,7 @@
     min-height: 400px;
 }
 
-.console-list{
+.console-list {
     white-space: nowrap;
 }
 
@@ -49,4 +49,8 @@
 
 ::-webkit-scrollbar-corner {
     background-color: #18181800;
+}
+
+.user-select {
+    user-select: text;
 }

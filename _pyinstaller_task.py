@@ -9,22 +9,32 @@ str_program_path = os.path.abspath(os.path.dirname(__file__))
 str_info_js_path = os.path.join(str_program_path,'tools','home.js')
 
 def get_python_version():
-    return sys.version_info.major, sys.version_info.minor, sys.version_info.micro
+    version = sys.version.split()[0]  # Get the first part of the version string
+    return f"python - {version}"
 
 def get_pip_list():
-    result = subprocess.run([sys.executable, '-m', 'pip', 'list'], stdout=subprocess.PIPE)
-    return result.stdout.decode()
+    result = subprocess.run(['pip', 'list'], stdout=subprocess.PIPE, text=True)
+    pip_list = result.stdout.splitlines()[2:]  # Skip the header (first 2 lines)
+    return [f"{pkg.split()[0]} - {pkg.split()[1]}" for pkg in pip_list]
 
-def update_home_js():
-    python_version = '.'.join(map(str, get_python_version()))
+def update_home_js(str_info_js_path):
+    python_version = get_python_version()
     pip_list = get_pip_list()
+    
+    # Read the current content of the JS file
     with open(str_info_js_path, 'r', encoding='utf-8') as file:
         content = file.read()
+
+    # Find where to insert the version and pip list
     start_index = content.find('arr_libraries = [') + len('arr_libraries = [')
     end_index = content.find('];', start_index)
     
     if start_index != -1 and end_index != -1:
-        updated_content = content[:start_index] + f'"{python_version}", "{pip_list.replace("\n", '", "').strip()}"' + content[end_index:]
+        # Update the array with the new Python version and pip list
+        pip_list_formatted = '", "'.join(pip_list)
+        updated_content = (content[:start_index] + f'"{python_version}", "{pip_list_formatted}"' + content[end_index:])
+        
+        # Write the updated content back to the file
         with open(str_info_js_path, 'w', encoding='utf-8') as file:
             file.write(updated_content)
 
@@ -73,5 +83,5 @@ def compress_folder(input_folder, output_zip_file):
                 zipf.write(abs_path, rel_path)
 
 if __name__ == "__main__":
-    update_home_js()
+    update_home_js(str_info_js_path)
     bundle_project(str_project_name)
