@@ -22,6 +22,7 @@ str_config_name = 'config.json'
 str_csv_path = None
 str_csv_name = 'OCDList.csv'
 arr_csv_field_names = ['sub_folder','artist','title','media_type_audio_or_video','max_width_in_pixels', 'url']  # csv header list
+bool_is_downloading = False
 
 def fn_send_message(str, str_id=None):
     try:
@@ -81,6 +82,8 @@ def fn_get_paths():
 
 def fn_create_csv(e):
     try:
+        if bool_is_downloading:
+            return
         str_default_csv_path = os.path.join(str_program_path, str_csv_name) 
         if(os.path.exists(str_default_csv_path)):
             fn_send_message(f'{str_csv_name} already exists in the parent directory. Operation aborted.') 
@@ -178,7 +181,9 @@ def fn_mt_validate_csv(path):
         fn_send_message(str(ex))
 
 def fn_upload_csv(e):
-    global str_csv_path 
+    global str_csv_path
+    if bool_is_downloading:
+        return
     uploaded_file = filedialog.askopenfilename( 
         initialdir = "/", 
         title = "OCDownloader: Select a CSV File", 
@@ -343,6 +348,7 @@ def fn_download_file(list_row, int_row_index, int_row_count, int_message_index):
         fn_send_message(str(ex))
 
 def fn_mt_download_from_csv(e):
+    global bool_is_downloading
     class_stop_event.clear()
     """
     Handles multi-threaded downloading from a CSV file.
@@ -366,6 +372,10 @@ def fn_mt_download_from_csv(e):
     using `concurrent.futures.ThreadPoolExecutor()`.
     """   
     try:
+        if bool_is_downloading:
+            return
+        
+        bool_is_downloading = True
         # Step 1: Validate the CSV file
         if not fn_mt_validate_csv(str_csv_path):
             fn_send_message('Download Cancelled Due To Validation Issues.')
@@ -397,7 +407,7 @@ def fn_mt_download_from_csv(e):
                     result = future.result()  # Ensure completed downloads are processed
 
         fn_send_message("Download and conversion complete.")
-
+        bool_is_downloading = False
     except Exception as ex:
         fn_send_message(str(ex))
 
