@@ -4,9 +4,9 @@ A YouTube downloader focused on downloading and pre-organizing your music collec
 
 ## Features
 - Simple UI
-- CSV Template
-- Single executable
-- Save your CSV and redownload your collection anytime without having to manually reorganize your files.
+- Modifiable CSV Template
+- Portable
+- With a backup of your CSV you can redownload your collection anytime without having to manually reorganize your files.
 - Auto convert to MP3 and MP4
 
 ## Usage/Examples
@@ -23,7 +23,7 @@ A YouTube downloader focused on downloading and pre-organizing your music collec
    - For audio media types, the video width can be left blank.
    - Add multiple rows as needed.
 
-3. **Click "Upload CSV"** and choose your edited CSV.
+3. **Click "Upload CSV"** and choose your edited CSV. If you saved your CSV as an Excel (.xlsx, .xls) it would still work. Blank rows are ignored without error. Invalid headers or row values will raise errors.
 
 4. **Click "Download from CSV"** to begin downloading.
 

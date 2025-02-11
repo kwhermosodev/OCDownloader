@@ -7,7 +7,9 @@ libraries = [
     "requests",
     "yt-dlp",
     "ffmpeg-progress-yield",
-    "psutil"
+    "psutil",
+    "pandas",
+    "openpyxl"
 ]
 
 def install_libraries(library_list):

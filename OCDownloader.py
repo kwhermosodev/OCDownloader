@@ -1,7 +1,6 @@
 import json
 import sys
 import os
-import csv
 import requests
 import re
 import threading
@@ -14,6 +13,8 @@ import psutil
 import time
 import webview
 import random
+import pandas as pd
+import csv
 
 obj_window = None
 str_program_path = None
@@ -101,6 +102,17 @@ def fn_is_url_reachable(url):
     except:
         return False
 
+def fn_read_table(path):
+    _, file_extension = os.path.splitext(path)
+    if file_extension.lower() == '.csv':
+        data = pd.read_csv(path,header=0, skipinitialspace=True)
+    elif file_extension.lower() in ['.xls', '.xlsx']:
+        data = pd.read_excel(path,header=0,sheet_name=0)
+    else:
+        raise ValueError("Unsupported file type. Please select a CSV or Excel file.")
+    data = data.dropna(how='all')
+    return data
+
 def fn_validate_row(row, int_list_index, int_list_length, int_message_index):
     try:        
         boo_total_check = True
@@ -149,34 +161,34 @@ def fn_mt_validate_csv(path):
         if not path or not os.path.exists(path):
             fn_send_message("Invalid path or file does not exist.")
             return False
-        with open(path, 'r', newline='', encoding='utf-8') as upfile:
-            reader = csv.reader(upfile)
-            headers = next(reader)
-            if headers != arr_csv_field_names:
-                fn_send_message(f"Invalid headers. Expected: {arr_csv_field_names}")
-                return False
-            
-            bool_total_check = True
-            list_csv_rows = list(reader)
-            int_list_length = len(list_csv_rows)
-            fn_send_message(f'{int_list_length} rows are being validated')
-            int_message_index = int(time.time() * 1000)
-            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-                futures = {
-                    executor.submit(fn_validate_row, row, int_list_index, int_list_length, int_message_index): int_list_index
-                    for int_list_index, row in enumerate(list_csv_rows, start=1)
-                }
-                for future in concurrent.futures.as_completed(futures):
-                    if class_stop_event.is_set():  
-                        fn_send_message("Operation stopped by user.")
-                        executor.shutdown(wait=False)
-                        return False                    
-                    bool_is_row_valid = future.result()                    
-                    if not bool_is_row_valid:
-                        bool_total_check = False
-            if bool_total_check:
-                fn_send_message("CSV is valid.")          
-            return bool_total_check
+        panda_table = fn_read_table(path)
+        list_table_rows = panda_table.values.tolist()
+        list_headers = panda_table.columns.to_list()
+        if list_headers != arr_csv_field_names:
+            fn_send_message(f"Invalid headers. Expected: {arr_csv_field_names}, saw {list_headers}")
+            return False
+        
+        bool_total_check = True
+        int_list_length = len(list_table_rows)
+        fn_send_message(f'{int_list_length} rows are being validated')
+        int_message_index = int(time.time() * 1000)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            futures = {
+                executor.submit(fn_validate_row, row, int_list_index, int_list_length, int_message_index): int_list_index
+                for int_list_index, row in enumerate(list_table_rows, start=1)
+            }
+            for future in concurrent.futures.as_completed(futures):
+                if class_stop_event.is_set():  
+                    fn_send_message("Operation stopped by user.")
+                    executor.shutdown(wait=False)
+                    return False                    
+                bool_is_row_valid = future.result()                    
+                if not bool_is_row_valid:
+                    bool_total_check = False
+        if bool_total_check:
+            _, file_extension = os.path.splitext(path)
+            fn_send_message(f"{file_extension} file is valid.")          
+        return bool_total_check
     except Exception as ex:
         fn_send_message(str(ex))
 
@@ -187,7 +199,7 @@ def fn_upload_csv(e):
     uploaded_file = filedialog.askopenfilename( 
         initialdir = "/", 
         title = "OCDownloader: Select a CSV File", 
-        filetypes = [("CSV files", "*.csv")] 
+        filetypes = [("CSV files", "*.csv"), ("Excel files", "*.xlsx;*.xls")]
     )
     if(fn_mt_validate_csv(uploaded_file)): 
         str_csv_path = uploaded_file
@@ -376,35 +388,28 @@ def fn_mt_download_from_csv(e):
             return
         
         bool_is_downloading = True
-        # Step 1: Validate the CSV file
         if not fn_mt_validate_csv(str_csv_path):
             fn_send_message('Download Cancelled Due To Validation Issues.')
-            return        
+            return
 
-        # Step 2: Open the CSV file and prepare data
-        with open(str_csv_path, mode='r', newline='') as file:
-            reader = csv.reader(file)
-            headers = next(reader)  # Read the first row (header)
-            list_csv_rows = list(reader)  # Store all rows in a list
-            int_list_length = len(list_csv_rows)  # Get total number of downloads
-            
-            # Step 3: Notify GUI about the number of downloads
-            fn_send_message(f'Downloading {int_list_length} items.')           
+        panda_table = fn_read_table(str_csv_path)
+        list_table_rows = panda_table.values.tolist()
+        list_headers = panda_table.columns.to_list()
+        int_list_length = len(list_table_rows)
+        fn_send_message(f'Downloading {int_list_length} items.')           
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+            futures = {
+                executor.submit(fn_download_file, list_row, int_row_index, int_list_length, int_message_id): int_row_index
+                for int_row_index, list_row in enumerate(list_table_rows, start=1)
+                if (int_message_id := str(int(time.time() * 1000)) + str(random.randrange(100000, 1000000)))
+            }
 
-            # Step 4: Proceed to multi-threaded execution using ThreadPoolExecutor
-            with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-                futures = {
-                    executor.submit(fn_download_file, list_row, int_row_index, int_list_length, str(int(time.time() * 1000))+str(random.randrange(100000, 1000000))): int_row_index
-                    for int_row_index, list_row in enumerate(list_csv_rows, start=1)
-                }
-
-                for future in concurrent.futures.as_completed(futures):
-                    if class_stop_event.is_set():
-                        fn_send_message("Operation stopped by user.")
-                        executor.shutdown(wait=False)  # Stop all downloads immediately
-                        return
-                    
-                    result = future.result()  # Ensure completed downloads are processed
+            for future in concurrent.futures.as_completed(futures):
+                if class_stop_event.is_set():
+                    fn_send_message("Operation stopped by user.")
+                    executor.shutdown(wait=False)  # Stop all downloads immediately
+                    return                
+                result = future.result()  # Ensure completed downloads are processed
 
         fn_send_message("Download and conversion complete.")
         bool_is_downloading = False
