@@ -53,7 +53,7 @@ def bundle_project(str_project_name):
 
     pyinstaller_cmd_onedir = [
         f'{str_pyinstraller_path}',
-        '--onefile',
+        '--onedir',
         '--noconsole',
         '--windowed',
         f'--distpath={str_dist_onedir_path}',
