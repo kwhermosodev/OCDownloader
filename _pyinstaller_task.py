@@ -43,35 +43,51 @@ def bundle_project(str_project_name):
     str_parent_path = os.path.dirname(os.path.abspath(__file__))
     str_pyinstraller_path = os.path.join(str_parent_path,'_venv','Scripts', 'pyinstaller.exe')
     str_bundle_path =  os.path.join(str_parent_path, 'bundle')
-    str_dist_path = os.path.join(str_bundle_path,'dist')
-    str_build_path = os.path.join(str_bundle_path,'build')
+    str_dist_onedir_path = os.path.join(str_bundle_path,'onedir','dist')
+    str_dist_onefile_path = os.path.join(str_bundle_path,'onefile','dist')
+    str_build_onedir_path = os.path.join(str_bundle_path,'onedir','build')
+    str_build_onefile_path = os.path.join(str_bundle_path,'onefile','build')
     str_data_path = os.path.join(str_parent_path, 'tools') + ';tools'
     str_icon_path = os.path.join(str_parent_path,'tools','ico.ico')
     str_script_path = os.path.join(str_parent_path, str_project_name + '.py')
 
-    pyinstaller_cmd = [
+    pyinstaller_cmd_onedir = [
         f'{str_pyinstraller_path}',
-        '--onedir',
+        '--onefile',
         '--noconsole',
         '--windowed',
-        f'--distpath={str_dist_path}',
-        f'--workpath={str_build_path}',
+        f'--distpath={str_dist_onedir_path}',
+        f'--workpath={str_build_onedir_path}',
         f'--specpath={str_bundle_path}',
         f'--add-data={str_data_path}',
         f'--icon={str_icon_path}'
     ]
 
-    pyinstaller_cmd.append(str_script_path)
+    pyinstaller_cmd_onefile = [
+        f'{str_pyinstraller_path}',
+        '--onefile',
+        '--noconsole',
+        '--windowed',
+        f'--distpath={str_dist_onefile_path}',
+        f'--workpath={str_build_onefile_path}',
+        f'--specpath={str_bundle_path}',
+        f'--add-data={str_data_path}',
+        f'--icon={str_icon_path}'
+    ]
 
+    pyinstaller_cmd_onedir.append(str_script_path)
+    pyinstaller_cmd_onefile.append(str_script_path)
+    
     if(os.path.exists(str_bundle_path)):
         shutil.rmtree(str_bundle_path)
     
-    subprocess.run(pyinstaller_cmd, check=True)
+    subprocess.run(pyinstaller_cmd_onedir, check=True)
+    subprocess.run(pyinstaller_cmd_onefile, check=True)
 
     print(f'{str_project_name} was bundled successfully at {str_bundle_path}')
 
-    str_dist_project_path = os.path.join(str_dist_path,str_project_name)
-    str_dist_output_zip = os.path.join(str_dist_path,str_project_name+'.zip')
+    str_dist_project_path = os.path.join(str_dist_onedir_path,str_project_name)
+    str_dist_output_zip = os.path.join(str_dist_onedir_path,str_project_name+'.zip')
     compress_folder(str_dist_project_path, str_dist_output_zip)
 
 def compress_folder(input_folder, output_zip_file):

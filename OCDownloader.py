@@ -72,7 +72,7 @@ def fn_get_paths():
     try:
         if getattr(sys, 'frozen', False):
             str_program_path = os.path.abspath(os.path.dirname(sys.executable))
-            str_tools_path = os.path.join(str_program_path,'_internal','tools') 
+            str_tools_path = os.path.join(sys._MEIPASS, 'tools') if hasattr(sys, '_MEIPASS') else os.path.join(str_program_path, '_internal', 'tools')            
         else:
             str_program_path = os.path.abspath(os.path.dirname(__file__))
             str_tools_path = os.path.join(str_program_path,'tools')       
