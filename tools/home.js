@@ -4,6 +4,10 @@ $(document).ready(function () {
     $(window).on('resize', function () {
         fn_console_resize();
     })
+
+    $("#btn_clr").on("click", function(){
+        $("#ul_csl").html('');
+    })
 })
 
 function fn_console_resize() {

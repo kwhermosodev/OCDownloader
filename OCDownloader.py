@@ -312,6 +312,7 @@ def fn_download_file(list_row, int_row_index, int_row_count, int_message_index):
                     fn_send_message(f'{str_message_prefix} Downloading Audio Stream', int_message_index)
                 with ytdl.YoutubeDL(ydl_opts) as ydl:
                     result = ydl.download([url])
+                    fn_send_message(f'{str_message_prefix} Downloading Audio Stream {str(result)}', int_message_index)
                     if result == 0 and media_type == 'audio':
                         info_dict = ydl.extract_info(url, download=False)
                         str_file_path = ydl.prepare_filename(info_dict)
@@ -322,7 +323,7 @@ def fn_download_file(list_row, int_row_index, int_row_count, int_message_index):
                         ffmpeg_cmd = [str_ffmpeg_path, '-i', downloaded_file, '-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp3")]
                         ff = FfmpegProgress(ffmpeg_cmd)
                         for progress in ff.run_command_with_progress({"creationflags":CREATE_NO_WINDOW}):
-                            fn_send_message(f"{str_message_prefix} Converting {str_message_prefix} {int(progress)}%",int_message_index)
+                            fn_send_message(f"{str_message_prefix} Converting {int(progress)}%",int_message_index)
                         os.remove(downloaded_file)
                     elif result == 0 and media_type == 'video':
                         info_dict = ydl.extract_info(url, download=False)
@@ -334,8 +335,7 @@ def fn_download_file(list_row, int_row_index, int_row_count, int_message_index):
                         ffmpeg_cmd = [str_ffmpeg_path, '-i', downloaded_file,'-progress', 'pipe:1','-y', os.path.join(sub_folder_path, f"{final_filename}.mp4")]
                         ff = FfmpegProgress(ffmpeg_cmd)
                         for progress in ff.run_command_with_progress({"creationflags":CREATE_NO_WINDOW}):
-                            break
-                        fn_send_message(f"{str_message_prefix} Converting {int(progress)}%",int_message_index)
+                            fn_send_message(f"{str_message_prefix} Converting {int(progress)}%",int_message_index)                           
                         os.remove(downloaded_file)
                     fn_send_message(f'{str_message_prefix} Done', int_message_index) 
         return True
@@ -382,7 +382,7 @@ def fn_mt_download_from_csv(e):
             fn_send_message(f'Downloading {int_list_length} items.')           
 
             # Step 4: Proceed to multi-threaded execution using ThreadPoolExecutor
-            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
                 futures = {
                     executor.submit(fn_download_file, list_row, int_row_index, int_list_length, str(int(time.time() * 1000))+str(random.randrange(100000, 1000000))): int_row_index
                     for int_row_index, list_row in enumerate(list_csv_rows, start=1)
