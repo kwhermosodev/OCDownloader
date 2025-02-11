@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCDownloader</title>
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="common.css">
+</head>
+
+<body data-bs-theme="dark">
+    <section>
+        <div class="container">
+            <h1 id="h1_title" class="display-1 text-pixelated color-neon text-center mt-5">OCDownloader</h1>
+            <ul id="ul_tab_list" class="nav nav-tabs" data-bs-theme="dark" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button aria-selected="true" class="nav-link active color-neon text-pixelated" data-bs-target="#div_tab_controls" data-bs-toggle="tab" role="tab" type="button">Controls</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button aria-selected="false" class="nav-link color-neon text-pixelated" data-bs-target="#div_tab_about" data-bs-toggle="tab" role="tab" type="button">About</button>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="div_tab_controls" role="tabpanel" tabindex="0">
+                    <div id="div_ctrl" class="mb-2">
+                        <form action="">
+                            <div class="row g-2">
+                                <div class="col">
+                                    <div class="d-grid gap-2">
+                                        <button id="btn_cr_csv" class="btn btn-dark text-pixelated color-neon" type="button">Create Template CSV</button>
+                                        <button id="btn_ul_csv" class="btn btn-dark text-pixelated color-neon" type="button">Upload CSV</button>
+                                        <button id="btn_dl_csv" class="btn btn-dark text-pixelated color-neon" type="button">Download from CSV</button>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="d-grid gap-2">
+                                        <button id="btn_abrt" class="btn btn-dark text-pixelated color-neon" type="button">Abort</button>
+                                        <button id="btn_clr" class="btn btn-dark text-pixelated color-neon" type="button">Clear Console</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="div_csl" class="console-box px-0 py-3">
+                        <ul id="ul_csl" class="user-select text-pixelated color-neon console-list">
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="div_tab_about" role="tabpanel" tabindex="0">
+                    <div id="div_abt" class="console-box px-3 py-3">
+                        <span class="text-pixelated color-neon">Features:</span>
+                        <ul class="user-select text-pixelated color-neon">
+                            <li>Simple UI</li>
+                            <li>CSV Template</li>
+                            <li>Single executable</li>
+                            <li>Save your CSV and redownload your collection anytime without having to manually
+                                reorganize your files.</li>
+                            <li>Auto convert to MP3 and MP4</li>
+                        </ul>
+                        <span class="text-pixelated color-neon">Usage/Examples:</span>
+                        <ul class="user-select text-pixelated color-neon">
+                            <li>Click "Create CSV"
+                                <ul class="user-select text-pixelated color-neon">
+                                    <li>This will create a CSV in the same location as your .exe file.</li>
+                                </ul>
+                            </li>
+                            <li>Edit the CSV using MS Excel or any software available to you. All fields are
+                                required unless specified otherwise:
+                                <ul class="user-select text-pixelated color-neon">
+                                    <li>Put your custom subfolder(s) (e.g., `MP4` or `MP4\Synthwave Videos`) in
+                                        the `sub_folder` field.</li>
+                                    <li>Put the song artist in the `artist` field (optional).</li>
+                                    <li>Put the song title in the `title` field.</li>
+                                    <li>Put `audio` for audio files or `video` for video files in the
+                                        `media_type_audio_or_video` field.</li>
+                                    <li>Put the max width in pixels in the `max_width_in_pixels` field.</li>
+                                    <li>For audio media types, the video width can be left blank.</li>
+                                    <li>Add multiple rows as needed.</li>
+                                </ul>
+                            </li>
+                            <li>Click "Upload CSV" and choose your edited CSV.</li>
+                            <li>Click "Download from CSV" to begin downloading.</li>
+                        </ul>
+                        <span class="text-pixelated color-neon">Installation:</span>
+                        <ul class="user-select text-pixelated color-neon">
+                            <li>Download the `OCDownloader.zip` from the `bundle/dist/` folder.</li>
+                            <li>[IMPORTANT] Before extracting the .zip file, right-click it and tick `unblock`.
+                                Otherwise Windows would cripple the extracted .exe file.</li>
+                            <li>[IMPORTANT] Since my software isn't digitally signed, you will need to exempt
+                                the .exe from your antivirus.</li>
+                            <li>Run `OCDownloader.exe`</li>
+                        </ul>
+                        <span class="text-pixelated color-neon">Important Notice:</span>
+                        <ul class="user-select text-pixelated color-neon">
+                            <li>By using **OCDownloader**, you agree to the following terms and conditions.
+                                **OCDownloader** is a tool to help you download publicly available videos from
+                                YouTube. However, you are responsible for ensuring that you do not violate
+                                YouTube’s Terms of Service, copyright laws, or any applicable regulations.</li>
+                        </ul>
+                        <span class="text-pixelated color-neon">YouTube Terms of Service:</span>
+                        <ul class="user-select text-pixelated color-neon">
+                            <li>According to YouTube's <a href="https://www.youtube.com/t/terms">Terms of
+                                    Service</a>, you may not download any content unless:
+                                <ul class="user-select text-pixelated color-neon">
+                                    <li>A download button or link is provided by YouTube for that content.</li>
+                                    <li>You have explicit permission from the content owner to download their
+                                        content.</li>
+                                </ul>
+                            </li>
+                            <li>By using **OCDownloader**, you acknowledge that it is your responsibility to
+                                comply with YouTube’s Terms of Service and any applicable copyright laws.
+                                **OCDownloader** does not support or encourage downloading copyrighted content
+                                without permission.</li>
+                        </ul>
+                        <span class="text-pixelated color-neon">Purpose of OCDownloader:</span>
+                        <ul class="user-select text-pixelated color-neon">
+                            <li>Personal use: Downloading content for offline viewing where permitted by
+                                YouTube.</li>
+                            <li>Educational use: Downloading videos for educational or research purposes, where
+                                allowed by law.</li>
+                            <li>Non-commercial use: Downloading content strictly for personal or academic use,
+                                not for redistribution or commercial gain.</li>
+                        </ul>
+                        <span class="text-pixelated color-neon">Legal Disclaimer:</span>
+                        <ul class="user-select text-pixelated color-neon">
+                            <li>**OCDownloader** is provided as-is. We do not host or distribute any video
+                                content.</li>
+                            <li>The app does not condone the downloading or distribution of copyrighted material
+                                without proper authorization.</li>
+                            <li>**OCDownloader** is not responsible for any legal consequences resulting from
+                                the misuse of the app.</li>
+                            <li>Users must adhere to all relevant copyright laws, including the **Digital
+                                Millennium Copyright Act (DMCA)**, and any other laws governing intellectual
+                                property in your country.</li>
+                        </ul>
+                        <span class="text-pixelated color-neon">User Responsibility:</span>
+                        <ul class="user-select text-pixelated color-neon">
+                            <li>By using **OCDownloader**, you acknowledge that:
+                                <ul class="user-select text-pixelated color-neon">
+                                    <li>You are solely responsible for ensuring that you do not violate any
+                                        intellectual property rights or YouTube’s Terms of Service.</li>
+                                    <li>You must not use the app to download copyrighted content unless you have
+                                        explicit permission from the copyright owner.</li>
+                                    <li>You will not use **OCDownloader** for any commercial purposes or to
+                                        redistribute downloaded content without proper authorization.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <span class="text-pixelated color-neon">Feature Limitations:</span>
+                        <ul class="user-select text-pixelated color-neon">
+                            <li>**OCDownloader** does not host any video content. Videos are downloaded directly
+                                from YouTube's servers.</li>
+                        </ul>
+                        <span class="text-pixelated color-neon">Copyright and Usage:</span>
+                        <ul class="user-select text-pixelated color-neon">
+                            <li>If you are unsure whether your intended use of downloaded content is legal, it
+                                is advisable to consult a legal professional. **OCDownloader** is not liable for
+                                any legal disputes or consequences that may arise from its use.</li>
+                        </ul>
+                        <span class="text-pixelated color-neon">DISCLAIMER:</span>
+                        <ul class="user-select text-pixelated color-neon">
+                            <li>This tool is provided for personal and educational use only. We do not encourage
+                                or support the illegal download or distribution of copyrighted content. You are
+                                responsible for ensuring you comply with YouTube’s Terms of Service and all
+                                applicable copyright laws.</li>
+                        </ul>
+                        <span class="text-pixelated color-neon">Python and Libraries used and included:</span>
+                        <ul class="user-select color-neon text-pixelated" id="ul_libraries">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="jquery.js"></script>
+    <script src="bootstrap.js"></script>
+    <script src="home.js"></script>
+</body>
+
+</html>
