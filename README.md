@@ -2,7 +2,10 @@
 
 A YouTube downloader focused on downloading and pre-organizing your music collection. Simply create a CSV file detailing your desired subfolders, the correct file naming via the artist-title standard, and the max video width for uniformity.
 
+![](/tools/screenshot.jpg)
+
 ## Features
+
 - Simple UI
 - Modifiable CSV Template
 - Portable
